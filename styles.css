@@ -1,0 +1,233 @@
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --text: #c9d1d9;
+  --gray: #8b949e;
+  --accent: #ff652f;
+  --green: #2ecc71;
+  --font: 'Poppins', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow-x: hidden;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all .6s ease-out;
+}
+.loaded .navbar {
+  opacity: 1;
+  transform: translateY(0);
+}
+.brand {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+.nav-links a {
+  color: var(--text);
+  font-weight: 500;
+  transition: color .3s;
+}
+.nav-links a:hover {
+  color: var(--accent);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+.hire-btn {
+  background: var(--accent);
+  color: #fff;
+  padding: .65rem 1.3rem;
+  border-radius: .6rem;
+}
+.hire-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* HERO */
+.hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.card {
+  background: var(--card);
+  border-radius: 1rem;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all .8s ease-out;
+}
+.loaded .left-card {
+  opacity: 1;
+  transform: translate(0);
+  transition-delay: .3s;
+}
+.loaded .right-card {
+  opacity: 1;
+  transform: translate(0);
+  transition-delay: .5s;
+}
+
+/* بطاقة البروفايل */
+.profile-pic {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 1rem;
+}
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.bg-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 180px;
+  height: 180px;
+  background: var(--accent);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  animation: pulse 4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: translate(-50%, -50%) scale(1); }
+  50%    { transform: translate(-50%, -50%) scale(1.05); }
+}
+
+.left-card h2 {
+  text-align: center;
+  margin-bottom: .25rem;
+}
+.subtitle {
+  color: var(--gray);
+  font-size: .9rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.social-icons a {
+  color: var(--text);
+  font-size: 1.2rem;
+  border: 1px solid var(--gray);
+  padding: .5rem;
+  border-radius: 50%;
+  transition: all .3s;
+}
+.social-icons a:hover {
+  color: var(--accent);
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* بطاقة اليمين */
+.greeting {
+  color: var(--gray);
+  font-size: 1rem;
+  margin-bottom: .5rem;
+}
+.right-card h1 {
+  font-size: 1.6rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+.available {
+  display: flex;
+  align-items: center;
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+}
+.dot {
+  width: .6rem;
+  height: .6rem;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+  margin-inline-start: .5rem;
+}
+
+.download-btn {
+  background: var(--accent);
+  color: #fff;
+  padding: .65rem 1.3rem;
+  border-radius: .6rem;
+  margin-bottom: 0;
+}
+.download-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* شركات */
+.companies-card {
+  transform: translateY(30px);
+}
+.loaded .companies-card {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: .7s;
+}
+.companies-card h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+.company-logos {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.company-logos i,
+.company-logos .company-img {
+  font-size: 1.8rem;
+  opacity: .7;
+  transition: all .3s;
+}
+.company-logos:hover i,
+.company-logos:hover .company-img {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.company-img {
+  width: 30px;
+  height: auto;
+}
