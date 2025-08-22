@@ -109,26 +109,6 @@ setInterval(() => {
   v.textContent = (++n);
 }, 3500);
 
-const badgesMini = document.getElementById('badges-mini');
-
-[
-  { src: "nitro.png", url: "https://media.discordapp.net/attachments/1165186998420635729/1408450493268885627/nitro.png?ex=68a9c93d&is=68a877bd&hm=40bf94dd5dcd71fb7915edde744d8a5675428bfdd41a4c076efcf76d527d8a51&=&format=webp&quality=lossless&width=128&height=128" },
-  { src: "boost.png", url: "https://cdn.discordapp.com/emojis/1133899859028615168.webp?size=128" },
-  { src: "username.png", url: "https://cdn.discordapp.com/emojis/1170320200151871529.webp?size=128" }
-].forEach(item => {
-  const a = document.createElement('a');
-  a.href = item.url;
-  a.target = "_blank";
-  a.rel = "noopener noreferrer";
-
-  const i = document.createElement('img');
-  i.src = `badges/${item.src}`;
-  i.alt = '';
-
-  a.appendChild(i);
-  badgesMini.appendChild(a);
-});
-
 
 const typeEl = document.getElementById('type');
 let pi = 0;
