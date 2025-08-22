@@ -112,9 +112,9 @@ setInterval(() => {
 const badgesMini = document.getElementById('badges-mini');
 
 [
-  { src: "nitro.png", url: "https://media.discordapp.net/attachments/1165186998420635729/1408450493268885627/nitro.png?ex=68a9c93d&is=68a877bd&hm=40bf94dd5dcd71fb7915edde744d8a5675428bfdd41a4c076efcf76d527d8a51&=&format=webp&quality=lossless&width=72&height=72" },
-  { src: "boost.png", url: "https://media.discordapp.net/attachments/1165186998420635729/1408450492119519233/boost.png?ex=68a9c93d&is=68a877bd&hm=2763004518806a38d463b9b05bd5b1709d6905208b3982d61b7e6d0aa0f2cbaa&=&format=webp&quality=lossless&width=65&height=65" },
-  { src: "username.png", url: "https://media.discordapp.net/attachments/1165186998420635729/1408450494078128368/username.png?ex=68a9c93d&is=68a877bd&hm=944aff0191783070770d1287ee79198faf581ea66134baa2999ec99a5d8e5757&=&format=webp&quality=lossless&width=65&height=65" }
+  { src: "nitro.png", url: "https://cdn.discordapp.com/emojis/1334250852298522625.webp?size=128" },
+  { src: "boost.png", url: "https://cdn.discordapp.com/emojis/1133899859028615168.webp?size=128" },
+  { src: "username.png", url: "https://cdn.discordapp.com/emojis/1170320200151871529.webp?size=128" }
 ].forEach(item => {
   const a = document.createElement('a');
   a.href = item.url;
