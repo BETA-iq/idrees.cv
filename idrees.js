@@ -109,15 +109,6 @@ setInterval(() => {
   v.textContent = (++n);
 }, 3500);
 
-const badgesMini = document.getElementById('badges-mini');
-
-["nitro.png","boost.png","bug.png"].forEach(src => {
-  const i = document.createElement('img');
-  i.src = `/badges/${src}`;
-  i.alt = '';
-  badgesMini.appendChild(i);
-});
-
 
 const typeEl = document.getElementById('type');
 let pi = 0;
