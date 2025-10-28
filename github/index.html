@@ -483,8 +483,6 @@ data.forEach(repo => {
     </div>
   `;
   reposContainer.appendChild(el);
-
-  // إضافة listener لجميع الأزرار بعد الإنشاء
   el.querySelector('.viewBtn').addEventListener('click', () => openRepo(repo));
 });
 
@@ -504,12 +502,8 @@ function openRepo(repo) {
   codeBlock.textContent = 'Loading files...';
   codeBlock.className = 'language-none';
   Prism.highlightElement(codeBlock);
-
-  // ↓↓↓ الإضافة المهمة ↓↓↓
   document.querySelector('.page-glass').style.filter = 'blur(18px) brightness(0.6)';
   document.querySelector('main').style.filter = 'blur(12px) brightness(0.5)';
-  // ↑↑↑
-
   modalOverlay.style.display = 'flex';
   modalOverlay.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -524,8 +518,6 @@ function closeModal() {
   modalOverlay.style.display = 'none';
   modalOverlay.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
-
-  // ↓↓↓ أزل البلور عند الإغلاق ↓↓↓
   document.querySelector('.page-glass').style.filter = '';
   document.querySelector('main').style.filter = '';
 }
