@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>idrees - gitHub</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Cairo', sans-serif;
+    background: radial-gradient(circle at top left, #1e1f29, #0c0c12);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1 {
+    margin: 40px 0 20px;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #00e6ff, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+  }
+
+  .repo-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    width: 90%;
+    max-width: 1200px;
+    margin-bottom: 50px;
+  }
+
+  .repo {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    transform: translateY(30px);
+    opacity: 0;
+    animation: fadeInUp 0.6s forwards;
+  }
+
+  .repo:hover {
+    transform: scale(1.04);
+    background-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  @keyframes fadeInUp {
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .repo h2 {
+    margin: 0 0 10px;
+    font-size: 1.3rem;
+    background: linear-gradient(90deg, #00e6ff, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .repo p {
+    font-size: 0.95rem;
+    color: #ccc;
+    min-height: 50px;
+  }
+
+  .repo a {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #00e6ff, #ff00ff);
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+  }
+
+  .repo a:hover {
+    opacity: 0.85;
+  }
+
+  footer {
+    text-align: center;
+    padding: 30px 0;
+    color: #777;
+    font-size: 0.9rem;
+  }
+
+  .loader {
+    margin-top: 100px;
+    font-size: 1.2rem;
+    color: #888;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <h1>github repositories</h1>
+  <div id="repos" class="repo-container"></div>
+  <div class="loader" id="loader">Wait..</div>
+
+  <footer>© 2025 — Idrees.cv/github</footer>
+
+<script>
+  async function fetchRepos() {
+    const container = document.getElementById('repos');
+    const loader = document.getElementById('loader');
+    try {
+      const res = await fetch(`https://api.github.com/users/BETA-iq/repos?sort=updated`);
+      const data = await res.json();
+      loader.style.display = 'none';
+
+      data.forEach((repo, i) => {
+        const div = document.createElement('div');
+        div.className = 'repo';
+        div.style.animationDelay = `${i * 0.08}s`;
+
+        div.innerHTML = `
+          <h2>${repo.name}</h2>
+          <p>${repo.description ? repo.description : 'no description'}</p>
+          <a href="${repo.html_url}" target="_blank">repositories view</a>
+        `;
+        container.appendChild(div);
+      });
+    } catch (err) {
+      loader.textContent = 'error';
+    }
+  }
+
+  fetchRepos();
+</script>
+</body>
+</html>
