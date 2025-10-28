@@ -1,276 +1,603 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>idrees - GitHub Repositories</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Idrees — GitHub Repositories</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.css" integrity="sha512-9I3M7k4y7o6b5Gq6T+K7g6qkz0W8g1e2cWgQ3Pvq0u6qQb0G3Xq3N2W8Qz6r4G0s9bD6a8c9k7Z9Fz+Xb2h3A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-y7Kxw9Q9nQk5tT2xYyKrsW2hZx4z8fQ1Z2b6vYw7Kp3yX9g6Lq8mZ7w0n4Q2b5c3" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-js.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
-  body {
-    margin: 0;
-    font-family: 'Cairo', sans-serif;
-    background: radial-gradient(circle at top left, #1e1f29, #0c0c12);
-    color: #111;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    overflow-x: hidden;
-    backdrop-filter: blur(20px);
-  }
+:root {
+  --bg: #000;
+  --txt: #fff;
+  --accent: rgba(255, 255, 255, 0.9);
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-2: rgba(255, 255, 255, 0.10);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --radius: 22px;
+  --muted: #d1d5db;
+}
 
-  header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 30px;
-    margin-top: 10px;
-  }
+* { box-sizing: border-box; }
 
-  header img {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.6);
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
+html,body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: "Cairo", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
 
-  h1 {
-    font-size: 2rem;
-    background: linear-gradient(90deg, #0077ff, #a700ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+.bg-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bg-vid, .bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.55) saturate(0.9);
+  transform: scale(1.04);
+  opacity: 0.18;
+}
 
-  .repo-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    width: 90%;
-    max-width: 1200px;
-    margin-bottom: 50px;
-    padding-bottom: 20px;
-  }
+.page-glass {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.02) 50%,
+      rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(14px) saturate(120%);
+}
 
-  .repo {
-    backdrop-filter: blur(16px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 16px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    transform: translateY(30px);
-    opacity: 0;
-    animation: fadeInUp 0.6s forwards;
-  }
+.header {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 20px;
+  width: 100%;
+  justify-content: center;
+}
+.header-inner {
+  width: min(1100px, 94%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
 
-  .repo:hover {
-    transform: scale(1.04);
-    background-color: rgba(255, 255, 255, 0.75);
-    box-shadow: 0 4px 30px rgba(0,0,0,0.08);
-  }
+.avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6));
+  padding: 3px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.08) inset;
+  display: block;
+  object-fit: cover;
+}
 
-  @keyframes fadeInUp {
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
+.title {
+  flex: 1;
+}
+.title h1 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+}
+.title p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #9ca3af;
+}
 
-  .repo h2 {
-    margin: 0 0 10px;
-    font-size: 1.3rem;
-    background: linear-gradient(90deg, #0077ff, #a700ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+.container {
+  position: relative;
+  z-index: 3;
+  width: min(1100px, 94%);
+  margin: 24px auto 80px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px;
+}
 
-  .repo p {
-    font-size: 0.9rem;
-    color: #333;
-    min-height: 50px;
-  }
+.repo {
+  position: relative;
+  border-radius: var(--radius);
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.46));
+  border: 1px solid rgba(255,255,255,0.22);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  box-shadow: var(--shadow);
+  color: #0b1220;
+  transition: transform .28s cubic-bezier(.2,.9,.27,1), box-shadow .28s;
+  cursor: default;
+  overflow: hidden;
+}
+.repo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02) 35%, transparent 70%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
 
-  .repo button {
-    margin-top: 10px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #0077ff, #a700ff);
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-  }
+.repo:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 60px rgba(0,0,0,0.4);
+}
 
-  .repo button:hover {
-    opacity: 0.9;
-  }
+.repo h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  letter-spacing: 0.2px;
+  color: #082030;
+}
+.repo p {
+  margin: 0;
+  color: #334155;
+  font-size: 13px;
+  min-height: 44px;
+}
 
-  .loader {
-    margin-top: 100px;
-    font-size: 1.2rem;
-    color: #666;
-    animation: blink 1s infinite;
-  }
+.meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  justify-content: space-between;
+}
+.meta-left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.04);
+  color: #0f1724;
+  font-size: 12px;
+}
 
-  @keyframes blink {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 1; }
-  }
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.btn {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(90deg, rgba(0,119,255,0.95), rgba(167,0,255,0.95));
+  color: white;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.18);
+  transition: transform .12s ease, opacity .12s;
+}
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: #0b1220;
+  font-weight: 600;
+}
+.btn:active { transform: translateY(1px); }
 
-  footer {
-    text-align: center;
-    padding: 30px 0;
-    color: #555;
-    font-size: 0.9rem;
-  }
+.loader {
+  width: 100%;
+  text-align: center;
+  color: #94a3b8;
+  margin-top: 36px;
+  font-size: 15px;
+}
 
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(12px);
-    background: rgba(255,255,255,0.25);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 99;
-  }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6,6,10,0.45);
+  backdrop-filter: blur(8px) saturate(120%);
+}
 
-  .modal-content {
-    background: rgba(255,255,255,0.85);
-    border-radius: 16px;
-    padding: 20px;
-    width: 90%;
-    max-width: 600px;
-    color: #000;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    animation: pop 0.3s ease;
-  }
+.modal {
+  width: 92%;
+  max-width: 920px;
+  max-height: 86vh;
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.92));
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 20px 60px rgba(2,6,23,0.28);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: #08101a;
+}
 
-  @keyframes pop {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
+.modal-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+.modal-title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.modal-title h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.modal-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 
-  .modal-content h3 {
-    margin-top: 0;
-  }
+.modal-body {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  height: calc(86vh - 96px);
+}
+.file-list {
+  background: rgba(3,7,18,0.02);
+  border-radius: 10px;
+  padding: 8px;
+  overflow: auto;
+  border: 1px solid rgba(2,6,23,0.04);
+}
+.file-item {
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  cursor: pointer;
+  color: #0b1220;
+}
+.file-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+.file-item small { color: #334155; font-weight: 600; }
 
-  .modal ul {
-    list-style: none;
-    padding: 0;
-    max-height: 300px;
-    overflow-y: auto;
-  }
+.viewer {
+  background: #00101a;
+  border-radius: 10px;
+  overflow: auto;
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.viewer .meta {
+  margin-bottom: 8px;
+}
+.viewer pre {
+  margin: 0;
+  background: transparent;
+  border-radius: 8px;
+  padding: 12px;
+  overflow: auto;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #e6eef6;
+}
 
-  .modal li {
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    font-size: 0.95rem;
-  }
+.viewer-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 
-  .modal button {
-    margin-top: 12px;
-    background: #ff006a;
-  }
+.copy-btn {
+  background: rgba(255,255,255,0.06);
+  color: #e6eef6;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
 
-  .close-btn {
-    float: left;
-    font-size: 1.3rem;
-    cursor: pointer;
-    color: #333;
-  }
+@media (max-width: 880px) {
+  .modal-body { grid-template-columns: 1fr; height: calc(86vh - 128px); }
+  .file-list { order: 2; max-height: 220px; }
+  .viewer { order: 1; height: 320px; }
+}
+
+.center { text-align: center; }
 </style>
 </head>
 <body>
-  <header>
-    <img id="avatar" src="" alt="GitHub Avatar">
-    <h1>مشاريعي على GitHub</h1>
-  </header>
-
-  <div id="repos" class="repo-container"></div>
-  <div class="loader" id="loader">wait...</div>
-
-  <footer>© 2025 — Idrees.cv/github</footer>
-
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">✖</span>
-      <h3 id="repoTitle"></h3>
-      <ul id="fileList"></ul>
-      <a id="downloadLink" target="_blank">
-        <button>Download as (ZIP)</button>
-      </a>
+<div class="bg-wrap">
+  <img class="bg-img" src="" alt="" />
+</div>
+<div class="page-glass"></div>
+<header class="header" role="banner">
+  <div class="header-inner">
+    <img id="avatar" class="avatar" src="" alt="Avatar">
+    <div class="title">
+      <h1 id="displayName">BETA-iq</h1>
+      <p id="displayBio">Loading GitHub profile...</p>
+    </div>
+    <div style="flex:0 0 180px; text-align:right;">
+      <a id="githubBtn" class="btn" href="#" target="_blank">Open on GitHub</a>
     </div>
   </div>
+</header>
+<main class="container" id="reposContainer" aria-live="polite"></main>
+<div class="loader center" id="loader">Loading repositories...</div>
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" role="document" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <div class="modal-title">
+        <strong id="modalRepoName">Repository</strong>
+        <small id="modalRepoDesc" style="color:#445; font-weight:600;"></small>
+      </div>
+      <div class="modal-controls">
+        <a id="downloadZip" class="btn ghost" target="_blank">Download ZIP</a>
+        <button class="btn" id="closeModal">Close</button>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="file-list" id="fileList" aria-label="Files list">
+      </div>
+
+      <div class="viewer" id="viewer">
+        <div class="viewer-controls" style="justify-content:space-between;">
+          <div id="viewerFilePath" style="font-weight:700; color:#bfe6ff;">Select a file to view</div>
+          <div>
+            <button class="copy-btn" id="copyBtn">Copy</button>
+            <a id="openRaw" class="copy-btn" href="#" target="_blank">Open Raw</a>
+          </div>
+        </div>
+        <pre><code id="codeBlock" class="language-none">No file selected.</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="position:relative; z-index:3; color:#94a3b8; text-align:center; padding:36px 12px;">
+  © <span id="year">2025</span> — idrees.cv/github
+</footer>
 
 <script>
-  const githubUser = "BETA-iq";
+const GITHUB_USER = "BETA-iq";
+const MAX_REPOS = 50;
+const avatarEl = document.getElementById('avatar');
+const displayName = document.getElementById('displayName');
+const displayBio = document.getElementById('displayBio');
+const githubBtn = document.getElementById('githubBtn');
+const reposContainer = document.getElementById('reposContainer');
+const loader = document.getElementById('loader');
+const modalOverlay = document.getElementById('modalOverlay');
+const modalRepoName = document.getElementById('modalRepoName');
+const modalRepoDesc = document.getElementById('modalRepoDesc');
+const fileList = document.getElementById('fileList');
+const viewer = document.getElementById('viewer');
+const codeBlock = document.getElementById('codeBlock');
+const viewerFilePath = document.getElementById('viewerFilePath');
+const copyBtn = document.getElementById('copyBtn');
+const openRaw = document.getElementById('openRaw');
+const downloadZip = document.getElementById('downloadZip');
+const closeModalBtn = document.getElementById('closeModal');
+let currentRepo = null;
+let currentFileRawUrl = null;
+function extToPrismLang(name) {
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  const map = {
+    js: 'javascript', jsx: 'jsx', ts: 'typescript', tsx: 'tsx',
+    py: 'python', java: 'java', php: 'php', rb: 'ruby',
+    css: 'css', scss: 'scss', html: 'markup', htm: 'markup',
+    json: 'json', md: 'markdown', yml: 'yaml', yaml: 'yaml',
+    sh: 'bash', txt: 'none', xml: 'markup', svg: 'markup',
+    zsh: 'bash', bash: 'bash'
+  };
+  return map[ext] || 'none';
+}
 
-  async function fetchUser() {
-    const avatar = document.getElementById('avatar');
-    const res = await fetch(`https://api.github.com/users/${githubUser}`);
+async function fetchUser() {
+  try {
+    const res = await fetch(`https://api.github.com/users/${GITHUB_USER}`);
+    const user = await res.json();
+    avatarEl.src = user.avatar_url;
+    displayName.textContent = user.login;
+    displayBio.textContent = user.bio || user.location || 'GitHub profile';
+    githubBtn.href = user.html_url;
+  } catch (err) {
+    displayBio.textContent = 'Unable to load profile.';
+  }
+}
+
+async function fetchRepos() {
+  try {
+    const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=${MAX_REPOS}&sort=updated`);
     const data = await res.json();
-    avatar.src = data.avatar_url;
-  }
+    loader.style.display = 'none';
 
-  async function fetchRepos() {
-    const container = document.getElementById('repos');
-    const loader = document.getElementById('loader');
-    try {
-      const res = await fetch(`https://api.github.com/users/${githubUser}/repos?sort=updated`);
-      const data = await res.json();
-      loader.style.display = 'none';
-
-      data.forEach((repo, i) => {
-        const div = document.createElement('div');
-        div.className = 'repo';
-        div.style.animationDelay = `${i * 0.08}s`;
-        div.innerHTML = `
-          <h2>${repo.name}</h2>
-          <p>${repo.description ? repo.description : 'لا يوجد وصف للمشروع.'}</p>
-          <button onclick="openRepo('${repo.name}', '${repo.html_url}')">عرض الملفات</button>
-        `;
-        container.appendChild(div);
-      });
-    } catch {
-      loader.textContent = 'error.';
+    if (!Array.isArray(data)) {
+      reposContainer.innerHTML = '<div class="loader">No repositories found or rate-limited.</div>';
+      return;
     }
+
+    data.forEach(repo => {
+      const el = document.createElement('article');
+      el.className = 'repo';
+      el.innerHTML = `
+        <h2>${repo.name}</h2>
+        <p>${repo.description ? repo.description : 'No description provided.'}</p>
+        <div class="meta">
+          <div class="meta-left">
+            <span class="badge">${repo.language || '—'}</span>
+            <small style="color:#64748b;">Updated: ${new Date(repo.updated_at).toLocaleDateString()}</small>
+          </div>
+          <div class="actions">
+            <button class="btn" data-open="${repo.name}">View Files</button>
+            <a class="btn ghost" href="${repo.html_url}" target="_blank">GitHub</a>
+          </div>
+        </div>
+      `;
+      reposContainer.appendChild(el);
+      el.querySelector('[data-open]').addEventListener('click', () => openRepo(repo));
+    });
+
+  } catch (err) {
+    loader.textContent = 'Error loading repositories.';
+    console.error(err);
+  }
+}
+async function openRepo(repo) {
+  currentRepo = repo;
+  modalRepoName.textContent = repo.name;
+  modalRepoDesc.textContent = repo.description || '';
+  downloadZip.href = `${repo.html_url}/archive/refs/heads/main.zip`;
+  openRaw.href = '#';
+  viewerFilePath.textContent = 'Select a file to view';
+  codeBlock.textContent = 'Loading files...';
+  codeBlock.className = 'language-none';
+  Prism.highlightElement(codeBlock);
+  modalOverlay.style.display = 'flex';
+  modalOverlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo.name}/contents`);
+    const files = await res.json();
+    renderFileList(files);
+  } catch (err) {
+    fileList.innerHTML = '<div class="file-item">Unable to load repository files.</div>';
+    console.error(err);
+  }
+}
+
+function renderFileList(files) {
+  fileList.innerHTML = '';
+  if (!Array.isArray(files) || files.length === 0) {
+    fileList.innerHTML = '<div class="file-item">No files.</div>';
+    return;
   }
 
-  async function openRepo(name, url) {
-    const modal = document.getElementById('modal');
-    const title = document.getElementById('repoTitle');
-    const list = document.getElementById('fileList');
-    const dl = document.getElementById('downloadLink');
-    modal.style.display = 'flex';
-    title.textContent = name;
-    list.innerHTML = '<li>wait...</li>';
-    dl.href = url + '/archive/refs/heads/main.zip';
+  files.sort((a,b) => (a.type === b.type) ? a.name.localeCompare(b.name) : (a.type === 'dir' ? -1 : 1));
+  files.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'file-item';
+    row.innerHTML = `
+      <div style="display:flex; gap:10px; align-items:center;">
+        <span style="font-weight:700;">${item.type === 'dir' ? '📁' : '📄'}</span>
+        <div style="min-width:0;">
+          <div style="font-weight:700; color:#0b1220;">${item.name}</div>
+          <small>${item.type}${item.size ? ' • ' + Math.round(item.size/1024) + ' KB' : ''}</small>
+        </div>
+      </div>
+    `;
 
-    try {
-      const res = await fetch(`https://api.github.com/repos/${githubUser}/${name}/contents`);
-      const files = await res.json();
-      list.innerHTML = '';
-      files.forEach(f => {
-        const li = document.createElement('li');
-        li.textContent = f.name + (f.type === "dir" ? " 📁" : " 📄");
-        list.appendChild(li);
-      });
-    } catch {
-      list.innerHTML = '<li>error.</li>';
+    if (item.type === 'dir') {
+      row.addEventListener('click', () => browseDir(item.path));
+    } else {
+      row.addEventListener('click', () => openFile(item));
     }
-  }
 
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-  }
+    fileList.appendChild(row);
+  });
+}
 
-  fetchUser();
-  fetchRepos();
+async function browseDir(path) {
+  fileList.innerHTML = `<div class="file-item">Loading ${path} ...</div>`;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${currentRepo.name}/contents/${encodeURIComponent(path)}`);
+    const files = await res.json();
+    renderFileList(files);
+  } catch (err) {
+    fileList.innerHTML = '<div class="file-item">Unable to open directory.</div>';
+    console.error(err);
+  }
+}
+
+async function openFile(item) {
+  viewerFilePath.textContent = item.path;
+  openRaw.href = item.download_url || item.html_url;
+  currentFileRawUrl = item.download_url || null;
+  codeBlock.textContent = 'Loading file...';
+  codeBlock.className = 'language-none';
+  Prism.highlightElement(codeBlock);
+
+  try {
+    const res = await fetch(item.download_url);
+    if (!res.ok) {
+      codeBlock.textContent = 'Unable to fetch file content.';
+      return;
+    }
+    const text = await res.text();
+    const lang = extToPrismLang(item.name);
+    codeBlock.className = 'language-' + lang;
+    codeBlock.textContent = text;
+    Prism.highlightElement(codeBlock);
+    document.querySelector('.viewer').scrollTop = 0;
+  } catch (err) {
+    codeBlock.textContent = 'Error loading file content.';
+    console.error(err);
+  }
+}
+
+copyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(codeBlock.textContent);
+    copyBtn.textContent = 'Copied ✓';
+    setTimeout(() => copyBtn.textContent = 'Copy', 1500);
+  } catch (err) {
+    copyBtn.textContent = 'Copy failed';
+    setTimeout(() => copyBtn.textContent = 'Copy', 1500);
+  }
+});
+
+function closeModal() {
+  modalOverlay.style.display = 'none';
+  modalOverlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+closeModalBtn.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) closeModal();
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+fetchUser();
+fetchRepos();
+
 </script>
 </body>
 </html>
