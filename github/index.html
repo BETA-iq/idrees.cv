@@ -367,17 +367,6 @@ body {
     <div style="flex:0 0 180px; text-align:right;">
       <a id="githubBtn" class="btn" href="#" target="_blank">Open on GitHub</a>
     </div>
-    <div class="stats" style="width:100%; display:flex; justify-content:center; gap:20px; margin-top:12px;">
-  <div style="text-align:center;">
-    <div style="font-weight:700; font-size:16px;" id="repoCount">0</div>
-    <div style="font-size:12px; color:#9ca3af;">Repositories</div>
-  </div>
-  <div style="text-align:center;">
-    <div style="font-weight:700; font-size:16px;" id="languages">—</div>
-    <div style="font-size:12px; color:#9ca3af;">Languages</div>
-  </div>
-</div>
-
   </div>
 </header>
 <main class="container" id="reposContainer" aria-live="polite"></main>
@@ -465,12 +454,42 @@ async function fetchUser() {
   }
 }
 
-window.reposData = [];
 async function fetchRepos() {
   try {
     const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=${MAX_REPOS}&sort=updated`);
     const data = await res.json();
-    window.reposData = data;
+    loader.style.display = 'none';
+
+    if (!Array.isArray(data)) {
+      reposContainer.innerHTML = '<div class="loader">No repositories found or rate-limited.</div>';
+      return;
+    }
+
+data.forEach(repo => {
+  const el = document.createElement('article');
+  el.className = 'repo';
+  el.innerHTML = `
+    <h2>${repo.name}</h2>
+    <p>${repo.description ? repo.description : 'No description provided.'}</p>
+    <div class="meta">
+      <div class="meta-left">
+        <span class="badge">${repo.language || '—'}</span>
+        <small style="color:#000;">Updated: ${new Date(repo.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
+      </div>
+      <div class="actions">
+        <button class="btn viewBtn">View Files</button>
+        <a class="btn ghost" href="${repo.html_url}" target="_blank">GitHub</a>
+      </div>
+    </div>
+  `;
+  reposContainer.appendChild(el);
+let allRepos = [];
+
+async function fetchRepos() {
+  try {
+    const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=${MAX_REPOS}&sort=updated`);
+    const data = await res.json();
+    allRepos = data;
     loader.style.display = 'none';
 
     if (!Array.isArray(data)) {
@@ -506,19 +525,22 @@ async function fetchRepos() {
 reposContainer.addEventListener('click', (e) => {
   const btn = e.target.closest('.viewBtn');
   if (!btn) return;
+
   const repoEl = btn.closest('.repo');
   const repoName = repoEl.querySelector('h2').textContent;
-  const repo = window.reposData.find(r => r.name === repoName);
+  const repo = allRepos.find(r => r.name === repoName);
   if (repo) openRepo(repo);
 });
+
+});
+
 
   } catch (err) {
     loader.textContent = 'Error loading repositories.';
     console.error(err);
   }
 }
-
-async function openRepo(repo) {
+function openRepo(repo) {
   currentRepo = repo;
   modalRepoName.textContent = repo.name;
   modalRepoDesc.textContent = repo.description || '';
@@ -528,20 +550,24 @@ async function openRepo(repo) {
   codeBlock.textContent = 'Loading files...';
   codeBlock.className = 'language-none';
   Prism.highlightElement(codeBlock);
-
   document.querySelector('.page-glass').style.filter = 'blur(18px) brightness(0.6)';
   document.querySelector('main').style.filter = 'blur(12px) brightness(0.5)';
   modalOverlay.style.display = 'flex';
   modalOverlay.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
 
-  try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo.name}/contents`);
-    const files = await res.json();
-    renderFileList(files);
-  } catch {
-    fileList.innerHTML = '<div class="file-item">Unable to load repository files.</div>';
-  }
+  fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo.name}/contents`)
+    .then(r => r.json())
+    .then(renderFileList)
+    .catch(() => fileList.innerHTML = '<div class="file-item">Unable to load repository files.</div>');
+}
+
+function closeModal() {
+  modalOverlay.style.display = 'none';
+  modalOverlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  document.querySelector('.page-glass').style.filter = '';
+  document.querySelector('main').style.filter = '';
 }
 
 function renderFileList(files) {
@@ -564,11 +590,13 @@ function renderFileList(files) {
         </div>
       </div>
     `;
+
     if (item.type === 'dir') {
       row.addEventListener('click', () => browseDir(item.path));
     } else {
       row.addEventListener('click', () => openFile(item));
     }
+
     fileList.appendChild(row);
   });
 }
@@ -634,3 +662,4 @@ fetchRepos();
 </script>
 </body>
 </html>
+
