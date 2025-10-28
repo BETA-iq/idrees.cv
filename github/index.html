@@ -607,11 +607,6 @@ copyBtn.addEventListener('click', async () => {
   }
 });
 
-function closeModal() {
-  modalOverlay.style.display = 'none';
-  modalOverlay.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
 closeModalBtn.addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', (e) => {
   if (e.target === modalOverlay) closeModal();
