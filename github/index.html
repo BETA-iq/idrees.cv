@@ -465,24 +465,18 @@ async function fetchUser() {
   }
 }
 
-const repoCountEl = document.getElementById('repoCount');
-const languagesEl = document.getElementById('languages');
-
+window.reposData = [];
 async function fetchRepos() {
   try {
     const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=${MAX_REPOS}&sort=updated`);
     const data = await res.json();
+    window.reposData = data;
     loader.style.display = 'none';
 
     if (!Array.isArray(data)) {
       reposContainer.innerHTML = '<div class="loader">No repositories found or rate-limited.</div>';
       return;
     }
-
-    repoCountEl.textContent = data.length;
-    const langSet = new Set();
-    data.forEach(r => r.language && langSet.add(r.language));
-    languagesEl.textContent = Array.from(langSet).join(', ') || '—';
 
     data.forEach(repo => {
       const el = document.createElement('article');
@@ -502,8 +496,21 @@ async function fetchRepos() {
         </div>
       `;
       reposContainer.appendChild(el);
-      el.querySelector('.viewBtn').addEventListener('click', () => openRepo(repo));
     });
+  } catch (err) {
+    loader.textContent = 'Error loading repositories.';
+    console.error(err);
+  }
+}
+
+reposContainer.addEventListener('click', (e) => {
+  const btn = e.target.closest('.viewBtn');
+  if (!btn) return;
+  const repoEl = btn.closest('.repo');
+  const repoName = repoEl.querySelector('h2').textContent;
+  const repo = window.reposData.find(r => r.name === repoName);
+  if (repo) openRepo(repo);
+});
 
   } catch (err) {
     loader.textContent = 'Error loading repositories.';
