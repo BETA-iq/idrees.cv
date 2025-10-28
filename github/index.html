@@ -476,6 +476,10 @@ data.forEach(repo => {
         <span class="badge">${repo.language || '—'}</span>
         <small style="color:#000;">Updated: ${new Date(repo.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
       </div>
+      <div class="actions">
+        <button class="btn viewBtn">View Files</button>
+        <a class="btn ghost" href="${repo.html_url}" target="_blank">GitHub</a>
+      </div>
     </div>
   `;
   reposContainer.appendChild(el);
@@ -610,3 +614,6 @@ fetchRepos();
 </script>
 </body>
 </html>
+
+
+هذا كودي كامل انت بس قولي ايش اعدل وايش احط بداله
