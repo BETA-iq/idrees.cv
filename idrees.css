@@ -1,12 +1,10 @@
 :root {
-  --gx: 50%;
-  --gy: 50%;
   --bg: #000;
   --txt: #fff;
-  --accent: #fff;
-  --glass: rgba(255, 255, 255, .08);
-  --glass-2: rgba(255, 255, 255, .14);
-  --shadow: 0 10px 40px rgba(0, 0, 0, .45);
+  --accent: rgba(255, 255, 255, 0.9);
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-2: rgba(255, 255, 255, 0.10);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   --radius: 22px;
 }
 
@@ -109,7 +107,13 @@ body {
   pointer-events: none;
   opacity: 1;
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, .85));
-  animation: draw-border .9s ease-out forwards;
+  animation: draw-border .9s ease-out forwards sheenMove 12s ease-in-out infinite;
+}
+
+@keyframes sheenMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes draw-border {
@@ -133,6 +137,10 @@ body {
   filter: blur(8px);
   opacity: 0;
   transition: opacity .18s ease;
+}
+.card:hover {
+  transform: translateY(-6px) scale(1.01);
+  transition: transform .4s ease;
 }
 
 .card:hover::after {
@@ -273,6 +281,20 @@ h1 {
   box-shadow: 0 6px 22px rgba(0, 0, 0, .25);
   transition: transform .15s, box-shadow .15s, opacity .2s;
 }
+.card,
+.presence,
+.ico,
+.vol-wrap
+.speaker {
+  background: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.25);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.25);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
 
 .speaker:hover {
   transform: translateY(-2px);
@@ -424,6 +446,26 @@ h1 {
   width: 22px;
   height: 22px;
 }
+.card::after,
+.presence::after,
+.ico::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02) 35%, transparent 70%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.ico:hover,
+.speaker:hover,
+.presence:hover {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    0 8px 28px rgba(0, 0, 0, 0.45);
+  transform: translateY(-2px);
+}
 
 .badges {
   display: flex;
@@ -533,11 +575,13 @@ h1 {
 }
 
 main.card {
-  margin: calc(50vh - 260px) auto 0;
+  margin: calc(50vh - 250px + 10px) auto 0;
   max-width: 520px;
   animation: floatCard 6s ease-in-out infinite alternate;
 }
-@keyframes floatCard {
+
+
+@keframes floatCard {
   0% { transform: translateY(0); }
   100% { transform: translateY(-10px); }
 }
@@ -568,9 +612,12 @@ main.card {
 .links .ico:nth-child(3) { animation-delay: 2.4s; }
 
 @keyframes flyIcons {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(3deg); }
+  50% { transform: translateY(-14px) rotate(-3deg); }
+  75% { transform: translateY(-8px) rotate(2deg); }
 }
+
 
 .links .ico:hover {
   transform: scale(1.15);
