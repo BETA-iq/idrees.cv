@@ -465,26 +465,29 @@ async function fetchRepos() {
       return;
     }
 
-    data.forEach(repo => {
-      const el = document.createElement('article');
-      el.className = 'repo';
-      el.innerHTML = `
-        <h2>${repo.name}</h2>
-        <p>${repo.description ? repo.description : 'No description provided.'}</p>
-        <div class="meta">
-          <div class="meta-left">
-            <span class="badge">${repo.language || '—'}</span>
-            <small style="color:#000;">Updated: ${new Date(repo.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
-          </div>
-          <div class="actions">
-            <button class="btn" data-open="${repo.name}">View Files</button>
-            <a class="btn ghost" href="${repo.html_url}" target="_blank">GitHub</a>
-          </div>
-        </div>
-      `;
-      reposContainer.appendChild(el);
-      el.querySelector('[data-open]').addEventListener('click', () => openRepo(repo));
-    });
+data.forEach(repo => {
+  const el = document.createElement('article');
+  el.className = 'repo';
+  el.innerHTML = `
+    <h2>${repo.name}</h2>
+    <p>${repo.description ? repo.description : 'No description provided.'}</p>
+    <div class="meta">
+      <div class="meta-left">
+        <span class="badge">${repo.language || '—'}</span>
+        <small style="color:#000;">Updated: ${new Date(repo.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
+      </div>
+      <div class="actions">
+        <button class="btn viewBtn">View Files</button>
+        <a class="btn ghost" href="${repo.html_url}" target="_blank">GitHub</a>
+      </div>
+    </div>
+  `;
+  reposContainer.appendChild(el);
+
+  // إضافة listener لجميع الأزرار بعد الإنشاء
+  el.querySelector('.viewBtn').addEventListener('click', () => openRepo(repo));
+});
+
 
   } catch (err) {
     loader.textContent = 'Error loading repositories.';
