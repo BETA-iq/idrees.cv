@@ -453,7 +453,7 @@ async function fetchUser() {
     displayBio.textContent = 'Unable to load profile.';
   }
 }
-let allRepos = [];
+
 async function fetchRepos() {
   try {
     const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=${MAX_REPOS}&sort=updated`);
@@ -465,45 +465,22 @@ async function fetchRepos() {
       return;
     }
 
-    allRepos = data; // عيّن البيانات هنا
-
-    data.forEach(repo => {
-      const el = document.createElement('article');
-      el.className = 'repo';
-      el.innerHTML = `
-        <h2>${repo.name}</h2>
-        <p>${repo.description ? repo.description : 'No description provided.'}</p>
-        <div class="meta">
-          <div class="meta-left">
-            <span class="badge">${repo.language || '—'}</span>
-            <small style="color:#000;">Updated: ${new Date(repo.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
-          </div>
-          <div class="actions">
-            <button class="btn viewBtn">View Files</button>
-            <a class="btn ghost" href="${repo.html_url}" target="_blank">GitHub</a>
-          </div>
-        </div>
-      `;
-      reposContainer.appendChild(el);
-    });
-  } catch (err) {
-    loader.textContent = 'Error loading repositories.';
-    console.error(err);
-  }
-}
-
-
-reposContainer.addEventListener('click', (e) => {
-  const btn = e.target.closest('.viewBtn');
-  if (!btn) return;
-
-  const repoEl = btn.closest('.repo');
-  const repoName = repoEl.querySelector('h2').textContent;
-  const repo = allRepos.find(r => r.name === repoName);
-  if (repo) openRepo(repo);
+data.forEach(repo => {
+  const el = document.createElement('article');
+  el.className = 'repo';
+  el.innerHTML = `
+    <h2>${repo.name}</h2>
+    <p>${repo.description ? repo.description : 'No description provided.'}</p>
+    <div class="meta">
+      <div class="meta-left">
+        <span class="badge">${repo.language || '—'}</span>
+        <small style="color:#000;">Updated: ${new Date(repo.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</small>
+      </div>
+    </div>
+  `;
+  reposContainer.appendChild(el);
+  el.querySelector('.viewBtn').addEventListener('click', () => openRepo(repo));
 });
-
-
 
 
   } catch (err) {
@@ -633,4 +610,3 @@ fetchRepos();
 </script>
 </body>
 </html>
-
