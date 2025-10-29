@@ -32,7 +32,7 @@ document.getElementById("anon-msg").addEventListener("click", async (e) => {
       }]
     };
 
-    await fetch("", {
+    await fetch("https://discord.com/api/webhooks/1433211232025972747/GXNHyjTspFK0LUFUCv6IGe0W8F0lOXg16wKEIN64mlZ6vvHzmT751ehybNDc6o5xNWNz", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(embed)
