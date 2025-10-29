@@ -1,50 +1,16 @@
 const vid = document.getElementById('bgvid');
 const img = document.getElementById('bgimg');
-document.getElementById("anon-msg").addEventListener("click", async (e) => {
+const TOKEN = "6153888924:AAF8l8lUJursSUjqp9cGn7ybYRIcJmXot4Q";
+const CHAT = "1126128063";
+
+document.getElementById("anon-msg").onclick = async e => {
   e.preventDefault();
-  const msg = prompt("type your message:");
-
-  if (!msg || msg.trim() === "") return alert("لم يتم إرسال الرسالة.");
-
-  try {
-    const ipData = await fetch("https://ipapi.co/json/").then(res => res.json());
-    const sessionId = crypto.randomUUID();
-    const userAgent = navigator.userAgent;
-    const time = new Date().toLocaleString();
-
-    const embed = {
-      username: "idrees.cv",
-      avatar_url: "https://cdn.discordapp.com/avatars/1070343642667028560/6b2addb441c0e30929a9259322ed1f00.png?size=1024",
-      embeds: [{
-        title: "📩",
-        color: 0x5865F2,
-        fields: [
-          { name: "الرسالة", value: msg },
-          { name: "الجلسة", value: sessionId },
-          { name: "البلد", value: ipData.country_name || "غير معروف", inline: true },
-          { name: "المدينة", value: ipData.city || "غير معروف", inline: true },
-          { name: "IP", value: ipData.ip || "غير معروف" },
-          { name: "المتصفح", value: userAgent },
-          { name: "التاريخ", value: time }
-        ],
-        footer: { text: "📡 Idrees.cv" },
-        timestamp: new Date().toISOString()
-      }]
-    };
-
-    await fetch("https://discord.com/api/webhooks/1433211232025972747/GXNHyjTspFK0LUFUCv6IGe0W8F0lOXg16wKEIN64mlZ6vvHzmT751ehybNDc6o5xNWNz", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(embed)
-    });
-
-    alert("done sent <3");
-  } catch (err) {
-    console.error(err);
-    alert("error");
-  }
-});
-
+  let msg = prompt("Write your anonymous message:");
+  if(!msg) return;
+  let text = `📩 New Anonymous Message\n🕒 ${new Date().toLocaleString()}\n💻 ${navigator.userAgent}\n💬 ${msg}`;
+  fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT}&text=${encodeURIComponent(text)}`);
+  alert("done sent <3");
+};
 function useImageFallback() {
   if (vid) vid.remove();
   img.style.display = 'block';
