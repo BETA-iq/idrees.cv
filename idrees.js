@@ -1,16 +1,35 @@
 const vid = document.getElementById('bgvid');
 const img = document.getElementById('bgimg');
-const TOKEN = "6153888924:AAF8l8lUJursSUjqp9cGn7ybYRIcJmXot4Q";
-const CHAT = "1126128063";
+async function loadMessages() {
+  try {
+    const res = await fetch('messages.json');
+    const data = await res.json();
+    const container = document.getElementById('messages');
+    container.innerHTML = '';
+    data.reverse().forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.innerHTML = `
+        <div class="msg-time">🕒 ${new Date(m.time).toLocaleString()}</div>
+        <div class="msg-ua">💻 ${m.ua}</div>
+        <div class="msg-content">💬 ${m.msg}</div>
+      `;
+      container.appendChild(div);
+    });
+  } catch(e) {
+    console.error(e);
+    document.getElementById('messages').innerHTML = 'Failed to load messages.';
+  }
+}
+loadMessages();
 
 document.getElementById("anon-msg").onclick = async e => {
   e.preventDefault();
-  let msg = prompt("Write your anonymous message:");
+  const msg = prompt("Write your anonymous message:");
   if(!msg) return;
-  let text = `📩 New Anonymous Message\n🕒 ${new Date().toLocaleString()}\n💻 ${navigator.userAgent}\n💬 ${msg}`;
-  fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT}&text=${encodeURIComponent(text)}`);
   alert("done sent <3");
 };
+
 function useImageFallback() {
   if (vid) vid.remove();
   img.style.display = 'block';
