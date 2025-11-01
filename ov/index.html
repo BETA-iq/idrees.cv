@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lilith - jibra'il</title>
+<meta name="theme-color" content="#000000" />
+<link rel="stylesheet" href="ov.css" />
+</head>
+<body>
 
+<div class="bg-wrap">
+<video id="bgvid" class="bg-vid bg-animate" autoplay muted loop playsinline preload="auto" poster="/ov/black.png">
+  <source src="/bg/back.mp4" type="video/mp4" />
+</video>
+<div class="page-glass"></div>
+<img id="bgimg" class="bg-img bg-animate" src="/ov/black.png" alt="">
+</div>
+
+<div class="stars"></div>
+<div class="page-glow" id="page-glow"></div>
+
+<div class="gate" id="gate" tabindex="0" role="button" aria-label="click to enter">
+  <div class="msg">click to enter...</div>
+</div>
+<button class="speaker" id="btn-audio" aria-label="toggle audio">
+  <svg id="ico-aud" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+    <path d="M11 5.05c0-.83-1-.99-1.38-.26L7.9 7H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2.9l1.72 2.22c.38.73 1.38.57 1.38-.26zM19.5 8a1 1 0 0 0-1 1 6 6 0 0 1 0 6 1 1 0 0 0 2 0 8 8 0 0 0 0-8 1 1 0 0 0-1-1z"/>
+  </svg>
+</button>
+<div class="vol-wrap" id="vol-wrap"><input id="vol" type="range" min="0" max="1" step="0.01" value="0.6"></div>
+<audio id="bg-audio" preload="none" loop src="/ov/audio.mp3"></audio>
+
+<main class="card" style="margin: calc(50vh - 260px) auto 0; max-width:520px;">
+  <div class="avatar-wrap">
+    <span class="aura"></span>
+    <span class="aura a2"></span>
+    <span class="sparkles"></span>
+    <span class="avatar-ring"></span>
+    <img class="avatar" src="https://cdn.discordapp.com/avatars/425848410567082004/3792cd133fb4fd3970ebb4a78cdcb59c.webp" alt="">
+  </div>
+  <h1>' Sàintlujain</h1>
+  <div class="type-wrap" dir="rtl">
+    <div class="loop" aria-hidden="true"></div>
+    <span id="type" class="type-text"></span><span class="caret"></span>
+  </div>
+
+  <div class="presence">
+    <div class="mini-wrap">
+      <span class="aura"></span>
+      <span class="aura a2"></span>
+      <span class="sparkles"></span>
+      <img class="mini" src="https://cdn.discordapp.com/avatars/425848410567082004/3792cd133fb4fd3970ebb4a78cdcb59c.webp" alt="">
+    </div>
+    <div>
+      <div class="name-row">
+        <div class="name">t6b9</div>
+        <div class="badges-mini" id="badges-mini">
+        </div>
+      </div>
+      <div class="last"><em>"I doubt, therefore I think, therefore I am"</em></div>
+    </div>
+  </div>
+  
+
+  <div class="links">
+    <a class="ico" href="https://discord.com/invite/tu" target="_blank" aria-label="Discord">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.91 19.91 0 0016.558 3c-.197.35-.422.82-.574 1.196a18.58 18.58 0 00-7.968 0C7.36 3.82 7.135 3.35 6.938 3a19.9 19.9 0 00-3.758 1.369C.34 9.2-.213 13.94.066 18.606a19.94 19.94 0 005.999 1.894c.463-.63.876-1.302 1.23-2.008a12.9 12.9 0 01-1.945-.93c.165-.121.325-.247.479-.378a13.2 13.2 0 0011.334 0c.154.131.314.257.48.378a12.9 12.9 0 01-1.947.93c.355.706.768 1.378 1.23 2.008a19.93 19.93 0 006-1.894c.316-5.06-.54-9.75-3.589-14.237zM8.885 14.89c-1.182 0-2.147-1.08-2.147-2.41 0-1.329.941-2.41 2.147-2.41s2.168 1.081 2.147 2.41c0 1.33-.965 2.41-2.147 2.41zm6.23 0c-1.182 0-2.147-1.08-2.147-2.41 0-1.329.941-2.41 2.147-2.41s2.168 1.081 2.147 2.41c0 1.33-.965 2.41-2.147 2.41z"/></svg>
+    </a>
+    <a class="ico" href="https://www.instagram.com/369369.36939/" target="_blank" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm5.5-.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0z"/></svg>
+    </a>
+  </div>
+
+  <div class="badges" id="badges"></div>
+</main>
+
+<div class="views" id="views">
+  <svg class="eye" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5C7 5 2.73 8.11 1 12.5 2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 12a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"/></svg>
+  <span id="v-num">2741</span>
+</div>
+
+<script src="ov.js"></script>
+</body>
+</html>
