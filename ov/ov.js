@@ -140,7 +140,7 @@ setInterval(() => {
 
 const badgesMini = document.getElementById('badges-mini');
 
-["nitro.png","boost.png","bug.png"].forEach(src => {
+["nitro.png","hype.png","boost.png","quest.png","orb.png"].forEach(src => {
   const i = document.createElement('img');
   i.src = `/ov/${src}`;
   i.alt = '';
@@ -168,7 +168,7 @@ let typing = true;
 
     if (ci === 0) {
       typing = true;
-      pi = (pi + 1) % ["7/28", "discord: 8.w", "From Karbala"].length;
+      pi = (pi + 1) % ["11/22", "Lilith", "discord: t6b9", "Lilith - jibra'il"].length;
       return setTimeout(typeLoop, 420);
     }
 
