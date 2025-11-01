@@ -113,7 +113,7 @@ const badgesMini = document.getElementById('badges-mini');
 
 ["nitro.png","hype.png","boost.png","quest.png","orb.png"].forEach(src => {
   const i = document.createElement('img');
-  i.src = `/img/${src}`;
+  i.src = `img/${src}`;
   i.alt = '';
   badgesMini.appendChild(i);
 });
