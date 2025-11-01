@@ -579,10 +579,11 @@ main.card {
 }
 
 
-@keframes floatCard {
+@keyframes floatCard {
   0% { transform: translateY(0); }
   100% { transform: translateY(-10px); }
 }
+
 
 .links {
   position: absolute;
