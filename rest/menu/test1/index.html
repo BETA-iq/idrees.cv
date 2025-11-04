@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>menu test - beta</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --glass: rgba(255,255,255,0.6);
+      --violet-1:#6b21a8;
+      --violet-2:#8b5cf6;
+      --accent: linear-gradient(135deg,var(--violet-2),var(--violet-1));
+      --card-shadow: 0 10px 30px rgba(107,33,168,0.12);
+      --glass-border: rgba(255,255,255,0.35);
+      --radius:16px;
+      --glass-blur:10px;
+      font-family: 'Segoe UI', Tahoma, system-ui, -apple-system, 'Noto Naskh Arabic', 'Cairo', sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      -webkit-font-smoothing:antialiased;
+      color:#111827;
+      padding:28px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:1200px;
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:28px;
+      align-items:start;
+    }
+
+    .sidebar{
+      background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.65));
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(var(--glass-blur));
+      border:1px solid var(--glass-border);
+      box-shadow: var(--card-shadow);
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;margin-bottom:12px
+    }
+    .brand .logo{
+      width:56px;height:56px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 6px 18px rgba(139,92,246,0.22);
+    }
+    .brand h1{font-size:18px;margin:0}
+    .brand p{margin:0;font-size:12px;color:#6b7280}
+
+    .categories{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .cat{padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border:1px solid transparent}
+    .cat:hover{transform:translateX(-6px);transition:transform .18s}
+    .cat.active{background:linear-gradient(90deg, rgba(139,92,246,0.12), rgba(139,92,246,0.06));border-color:rgba(139,92,246,0.18)}
+
+    .order{
+      margin-top:16px;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.6));border:1px solid var(--glass-border)
+    }
+    .order h3{margin:0 0 8px 0}
+    .items{max-height:220px;overflow:auto;padding-right:6px}
+    .order-item{display:flex;justify-content:space-between;gap:8px;padding:8px 4px;border-bottom:1px dashed rgba(15,23,42,0.04)}
+    .order-total{display:flex;justify-content:space-between;margin-top:12px;font-weight:700}
+    .btn-primary{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:white;text-decoration:none;box-shadow:0 8px 24px rgba(107,33,168,0.18)}
+
+    .main{
+      min-height:80vh;padding:18px;border-radius:var(--radius);background:linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.7));border:1px solid var(--glass-border);backdrop-filter: blur(var(--glass-blur));box-shadow:var(--card-shadow)
+    }
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .search{flex:1;display:flex;align-items:center;gap:8px}
+    .search input{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(15,23,42,0.06);outline:none}
+    .mood{display:flex;gap:8px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+    .card{
+      border-radius:14px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.85));border:1px solid rgba(15,23,42,0.04);box-shadow:0 8px 20px rgba(15,23,42,0.04);position:relative;overflow:hidden;cursor:pointer;transition:transform .22s, box-shadow .22s;
+    }
+    .card:hover{transform:translateY(-8px);box-shadow:0 26px 46px rgba(107,33,168,0.12)}
+    .card .thumb{width:100%;height:140px;border-radius:10px;background:linear-gradient(120deg, rgba(139,92,246,0.08), rgba(139,92,246,0.02));display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--violet-1)}
+    .card h4{margin:10px 0 4px 0}
+    .card p{margin:0;color:#6b7280;font-size:13px}
+    .price{position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.9);padding:6px 10px;border-radius:10px;font-weight:700;border:1px solid rgba(107,33,168,0.06)}
+
+    .ribbon{position:absolute;right:-40px;top:12px;transform:rotate(45deg);background:var(--accent);color:white;padding:6px 56px;font-weight:700;box-shadow:0 6px 18px rgba(139,92,246,0.18)}
+
+    .add{margin-top:12px;padding:10px 12px;border-radius:10px;border:none;background:transparent;border:1px dashed rgba(107,33,168,0.2);display:inline-block}
+    .add:hover{background:linear-gradient(90deg, rgba(139,92,246,0.08), rgba(139,92,246,0.04));}
+
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;visibility:hidden;opacity:0;transition:all .22s}
+    .modal.open{visibility:visible;opacity:1}
+    .sheet{width:520px;max-width:96%;background:white;border-radius:14px;padding:18px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 30px 60px rgba(15,23,42,0.12);transform:translateY(20px);transition:transform .22s}
+    .modal.open .sheet{transform:translateY(0)}
+    
+    .bg-shimmer{position:fixed;left:50%;top:8%;width:420px;height:220px;border-radius:50%;transform:translateX(-50%);filter:blur(40px);opacity:0.12;background:radial-gradient(circle at 30% 30%, var(--violet-2), transparent 20%), radial-gradient(circle at 70% 70%, var(--violet-1), transparent 30%);pointer-events:none}
+
+    @media (max-width:900px){
+      .wrap{grid-template-columns:1fr;margin:12px}
+      .sidebar{order:2}
+      .main{order:1}
+    }
+    .pulse{animation:pulse 3.2s infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+
+  </style>
+</head>
+<body>
+  <div class="bg-shimmer" aria-hidden></div>
+  <div class="wrap">
+
+    <aside class="sidebar" role="complementary">
+      <div class="brand">
+        <div class="logo">ب</div>
+        <div>
+          <h1>بنفش بوتيك</h1>
+          <p>menu test</p>
+        </div>
+      </div>
+
+      <div class="categories" id="cats">
+      </div>
+
+      <div class="order" aria-live="polite">
+        <h3>الطلبية</h3>
+        <div class="items" id="orderItems">
+          <p style="color:#9ca3af;font-size:13px">ماكو شي بعد - أضف أطباق من اليمين</p>
+        </div>
+        <div class="order-total"><span>المجموع</span><span id="total">0 IQD</span></div>
+        <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+          <a class="btn-primary" id="checkout">أرسل للواتساب</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main" role="main">
+      <div class="toolbar">
+        <div class="search">
+          <input id="search" placeholder="ابحث عن طبق أو مكون..." />
+        </div>
+        <div class="mood">
+          <button class="btn-primary pulse" id="demoMood">جرب</button>
+        </div>
+      </div>
+
+      <section class="grid" id="grid">
+      </section>
+    </main>
+
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="sheet">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3 id="m-title">تفاصيل الطبق</h3>
+        <button onclick="closeModal()">إغلاق ✕</button>
+      </div>
+      <div id="m-body">
+      </div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="add" onclick="addFromModal()">أضف للطلب</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DATA = {
+      categories: ['الأكثر مبيعًا','مشاوي','بيتزا','مشروبات','حلويات'],
+      dishes: [
+        {id:1,name:'برغر لحم كلاسيك',cat:'الأكثر مبيعًا',desc:'لحم طازج، جبنة شيدر، خس، بصل مكرمل',price:45000,tag:'شهير'},
+        {id:2,name:'شيش طاووق',cat:'مشاوي',desc:'قطع طاووق متبلة بطريقة خاصة',price:38000,tag:'مميز'},
+        {id:3,name:'بيتزا ببيروني',cat:'بيتزا',desc:'جبن موزاريلا وبيبوروني حار',price:52000,tag:'حار'},
+        {id:4,name:'عصير مانجا طبيعي',cat:'مشروبات',desc:'عصير مانجا طازج بدون سكر مضاف',price:12000,tag:'طبيعي'},
+        {id:5,name:'تشيز كيك فانيلا',cat:'حلويات',desc:'كريمي مع صوص توت',price:18000,tag:'حلو'}
+      ]
+    }
+    
+    const order = [];
+    const cats = document.getElementById('cats');
+    DATA.categories.forEach((c,i)=>{
+      const el = document.createElement('div');
+      el.className = 'cat' + (i===0? ' active':'');
+      el.innerHTML = `<span>${c}</span><span style='opacity:.6;font-size:12px'>${DATA.dishes.filter(d=>d.cat===c).length}</span>`;
+      el.onclick = ()=>{
+        document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
+        el.classList.add('active');
+        renderGrid(c);
+      }
+      cats.appendChild(el);
+    })
+
+    const grid = document.getElementById('grid');
+    function renderGrid(filter){
+      grid.innerHTML='';
+      const items = DATA.dishes.filter(d=> !filter || d.cat===filter);
+      items.forEach(d=>{
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.setAttribute('data-id',d.id);
+        card.innerHTML = `
+          <div class="price">${d.price.toLocaleString()} IQD</div>
+          <div class="thumb">${d.name.split(' ').slice(0,2).join(' ')}</div>
+          <h4>${d.name}</h4>
+          <p>${d.desc}</p>
+          <div style='display:flex;justify-content:space-between;align-items:center'>
+            <small style='color:#9ca3af'>${d.tag}</small>
+            <div>
+              <button class='add' onclick='openModal(${d.id}, event)'>عرض</button>
+              <button class='add' onclick='addToOrder(${d.id}, event)'>أضف</button>
+            </div>
+          </div>
+          <div class='ribbon' style='display:${d.tag?"block":"none"}'>${d.tag}</div>
+        `;
+        grid.appendChild(card);
+      })
+    }
+
+    renderGrid(DATA.categories[0]);
+    document.getElementById('search').addEventListener('input', e=>{
+      const q = e.target.value.trim();
+      if(!q) return renderGrid(document.querySelector('.cat.active').innerText);
+      grid.innerHTML='';
+      const res = DATA.dishes.filter(d=> d.name.includes(q) || d.desc.includes(q));
+      res.forEach(d=>{
+        const card = document.createElement('article');
+        card.className='card';
+        card.innerHTML = `\n          <div class=\"price\">${d.price.toLocaleString()} IQD</div>\n          <div class=\"thumb\">${d.name.split(' ').slice(0,2).join(' ')}</div>\n          <h4>${d.name}</h4>\n          <p>${d.desc}</p>\n          <div style='display:flex;justify-content:space-between;align-items:center'>\n            <small style='color:#9ca3af'>${d.tag}</small>\n            <div>\n              <button class=\'add\' onclick=\'openModal(${d.id}, event)\'>عرض</button>\n              <button class=\'add\' onclick=\'addToOrder(${d.id}, event)\'>أضف</button>\n            </div>\n          </div>\n          <div class=\'ribbon\'>${d.tag}</div>\n        `;
+        grid.appendChild(card);
+      })
+    })
+
+    const modal = document.getElementById('modal');
+    let currentModalId = null;
+    function openModal(id, e){
+      if(e) e.stopPropagation();
+      const dish = DATA.dishes.find(x=>x.id===id);
+      currentModalId = id;
+      document.getElementById('m-title').innerText = dish.name;
+      document.getElementById('m-body').innerHTML = `
+        <div style='display:flex;gap:12px;align-items:center'>
+          <div style='width:140px;height:120px;border-radius:10px;background:linear-gradient(120deg, rgba(139,92,246,0.08), rgba(139,92,246,0.02));display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--violet-1)'>${dish.name.split(' ').slice(0,2).join(' ')}</div>
+          <div>
+            <p style='margin:0 0 6px 0;color:#6b7280'>${dish.desc}</p>
+            <p style='margin:0;font-weight:700'>سعر: ${dish.price.toLocaleString()} IQD</p>
+            <p style='margin:8px 0 0 0;font-size:13px;color:#9ca3af'>تقدر تختار ملاحظات للطلب بعدين</p>
+          </div>
+        </div>
+      `;
+      modal.classList.add('open');
+    }
+    function closeModal(){ modal.classList.remove('open'); currentModalId = null }
+    function addFromModal(){ if(currentModalId) addToOrder(currentModalId); closeModal(); }
+    function addToOrder(id, e){ if(e) e.stopPropagation();
+      const dish = DATA.dishes.find(x=>x.id===id);
+      const existing = order.find(o=>o.id===id);
+      if(existing) existing.qty++;
+      else order.push({id:dish.id,name:dish.name,price:dish.price,qty:1});
+      renderOrder();
+      const card = document.querySelector(`.card[data-id='${id}']`);
+      if(card){ card.animate([{transform:'scale(1)'},{transform:'scale(1.03)'},{transform:'scale(1)'}],{duration:260}) }
+    }
+
+    function renderOrder(){
+      const container = document.getElementById('orderItems');
+      container.innerHTML='';
+      if(order.length===0){ container.innerHTML = `<p style="color:#9ca3af;font-size:13px">ماكو شي بعد - أضف أطباق من اليمين</p>`; document.getElementById('total').innerText='0 IQD'; return }
+      let total = 0;
+      order.forEach(o=>{
+        total += o.price * o.qty;
+        const el = document.createElement('div');
+        el.className = 'order-item';
+        el.innerHTML = `<div><strong>${o.name}</strong><div style='font-size:13px;color:#6b7280'>x${o.qty}</div></div><div style='text-align:left'><div>${(o.price*o.qty).toLocaleString()} IQD</div><div style='font-size:12px;margin-top:6px'><button onclick='dec(${o.id})' class='add'>-</button> <button onclick='inc(${o.id})' class='add'>+</button></div></div>`;
+        container.appendChild(el);
+      })
+      document.getElementById('total').innerText = total.toLocaleString() + ' IQD';
+    }
+    function inc(id){ const it = order.find(o=>o.id===id); if(it){ it.qty++; renderOrder(); } }
+    function dec(id){ const it = order.find(o=>o.id===id); if(it){ it.qty--; if(it.qty<=0) order.splice(order.indexOf(it),1); renderOrder(); } }
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      if(order.length===0) return alert('الطلب فارغ');
+      const lines = order.map(o=> `${o.name} x${o.qty} - ${(o.price*o.qty).toLocaleString()} IQD`);
+      const total = order.reduce((s,o)=>s + o.price*o.qty,0).toLocaleString();
+      const msg = `مرحباً، أود الطلب:\n${lines.join('\n')}\nالمجموع: ${total} IQD`;
+      const wa = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(wa,'_blank');
+    })
+    document.getElementById('demoMood').addEventListener('click', ()=>{
+      document.body.animate([{background: '#fff'},{background: '#faf5ff'},{background: '#fff'}],{duration:1200})
+      const all = document.querySelectorAll('.card .thumb');
+      all.forEach((t,i)=> t.animate([{transform:'rotate('+(i%2?4:-4)+'deg)'},{transform:'rotate(0)'}],{duration:700,delay:i*80}))
+    })
+
+    grid.addEventListener('click', e=>{
+      const card = e.target.closest('.card');
+      if(card){ const id = +card.getAttribute('data-id'); openModal(id); }
+    })
+
+  </script>
+</body>
+</html>
