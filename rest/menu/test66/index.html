@@ -437,72 +437,109 @@ function increaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty++; rend
 function decreaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty--; if(i.qty<=0){ order.splice(order.indexOf(i),1) } renderOrder() } }
 function setQty(id,val){ if(val<1) val=1; const i=order.find(o=>o.id===id); if(i){ i.qty=val; renderOrder() } }
 function removeItem(id){ const i=order.find(o=>o.id===id); if(i){ order.splice(order.indexOf(i),1); renderOrder() } }
-function openNoteModal(id){
+  
+let noteTargetId = null;
+
+function openNoteModal(id) {
   noteTargetId = id;
   const it = order.find(o => o.id === id);
   noteInput.value = it ? it.note : '';
+  noteTitle.innerText = `ملاحظة: ${it ? it.name : ''}`;
   noteModal.classList.add('open');
-  noteModal.setAttribute('aria-hidden','false');
+  noteModal.setAttribute('aria-hidden', 'false');
 }
 
-document.getElementById('cancelNote').onclick = ()=>{
+document.getElementById('cancelNote').addEventListener('click', () => {
   noteModal.classList.remove('open');
-  noteModal.setAttribute('aria-hidden','true');
-};
+  noteTargetId = null;
+});
 
-document.getElementById('saveNote').onclick = ()=>{
-  if(noteTargetId !== null){
-    const it = order.find(o=>o.id===noteTargetId);
-    if(it){ it.note = noteInput.value.trim(); renderOrder(); }
-    noteModal.classList.remove('open');
-    noteModal.setAttribute('aria-hidden','true');
+document.getElementById('saveNote').addEventListener('click', () => {
+  if (noteTargetId !== null) {
+    const it = order.find(o => o.id === noteTargetId);
+    if (it) it.note = noteInput.value.trim();
+    renderOrder();
   }
-};
+  noteModal.classList.remove('open');
+  noteTargetId = null;
+});
 
-cartBtn.onclick = ()=>checkoutModal.classList.add('open');
-cartBtnSide.onclick = ()=>checkoutModal.classList.add('open');
-openCheckoutFromSidebar.onclick = ()=>checkoutModal.classList.add('open');
-closeCheckout.onclick = ()=>checkoutModal.classList.remove('open');
-document.getElementById('cancelCheckout').onclick = ()=>checkoutModal.classList.remove('open');
-document.getElementById('openSide').onclick = ()=>document.getElementById('sidebarSlide').classList.add('open');
-document.getElementById('closeSide').onclick = ()=>document.getElementById('sidebarSlide').classList.remove('open');
-function closeSidebar(){ document.getElementById('sidebarSlide').classList.remove('open'); }
-function saveOrderToStorage(){
-  localStorage.setItem('menuOrder', JSON.stringify(order));
+function openCheckoutModal() {
+  renderOrder();
+  checkoutModal.classList.add('open');
+  checkoutModal.setAttribute('aria-hidden', 'false');
 }
-function loadOrderFromStorage(){
-  const saved = localStorage.getItem('menuOrder');
-  if(saved){ order = JSON.parse(saved); renderOrder(); }
+function closeCheckoutModal() {
+  checkoutModal.classList.remove('open');
+  checkoutModal.setAttribute('aria-hidden', 'true');
 }
+
+cartBtn.addEventListener('click', openCheckoutModal);
+cartBtnSide.addEventListener('click', openCheckoutModal);
+openCheckoutFromSidebar.addEventListener('click', openCheckoutModal);
+closeCheckout.addEventListener('click', closeCheckoutModal);
+document.getElementById('cancelCheckout').addEventListener('click', closeCheckoutModal);
+
+const sidebarSlide = document.getElementById('sidebarSlide');
+const panel = document.getElementById('panel');
+document.getElementById('openSide').addEventListener('click', () => {
+  panel.classList.add('open');
+  sidebarSlide.style.display = 'block';
+});
+document.getElementById('closeSide').addEventListener('click', closeSidebar);
+document.addEventListener('click', e => { if (e.target === sidebarSlide) closeSidebar(); });
+function closeSidebar() {
+  panel.classList.remove('open');
+  setTimeout(() => { sidebarSlide.style.display = 'none'; }, 300);
+}
+function saveOrderToStorage() {
+  try { localStorage.setItem('bf_order', JSON.stringify(order)); } catch (e) {}
+}
+function loadOrderFromStorage() {
+  try {
+    const d = JSON.parse(localStorage.getItem('bf_order') || '[]');
+    if (Array.isArray(d)) order = d;
+  } catch (e) { order = []; }
+  renderOrder();
+}
+window.addEventListener('beforeunload', saveOrderToStorage);
 loadOrderFromStorage();
-document.getElementById('checkoutForm').onsubmit = (e)=>{
+
+document.getElementById('checkoutForm').addEventListener('submit', e => {
   e.preventDefault();
-  if(order.length===0){ alert('السلة فارغة!'); return; }
+  if (order.length === 0) { alert('السلة فارغة!'); return; }
+
   const name = document.getElementById('custName').value.trim();
   const phone = document.getElementById('custPhone').value.trim();
   const address = document.getElementById('custAddress').value.trim();
-  const note = document.getElementById('orderNote').value.trim();
 
-  let msg = `طلب جديد من ${name}%0A`;
-  msg += `رقم الهاتف: ${phone}%0A`;
-  msg += `العنوان: ${address}%0A`;
-  if(note) msg += `ملاحظة عامة: ${note}%0A`;
-  msg += `--------------------------------%0A`;
-  order.forEach(o=>{
-    msg += `${o.name} x${o.qty} = ${o.price*o.qty} IQD`;
-    if(o.note) msg += ` (ملاحظة: ${o.note})`;
-    msg += `%0A`;
-  });
-  msg += `--------------------------------%0A`;
-  const total = order.reduce((s,o)=>s+o.price*o.qty,0);
-  msg += `المجموع الكلي: ${total} IQD`;
+  if (!name) { alert('يرجى إدخال الاسم الكامل'); return; }
+  const phoneDigits = phone.replace(/\D/g, '');
+  if (!/^07\d{9}$/.test(phoneDigits) && !/^7\d{9}$/.test(phoneDigits) && !/^9647\d{9}$/.test(phoneDigits)) {
+    alert('يرجى إدخال رقم هاتف عراقي صحيح');
+    return;
+  }
+  if (address.split(/\s+/).length < 2) { alert('يرجى كتابة عنوان لا يقل عن كلمتين'); return; }
 
-  const waUrl = `https://wa.me/?text=${msg}`;
+  let msgLines = `طلب جديد\n\nالاسم: ${name}\nالرقم: ${phone}\nالعنوان: ${address}\n\nالطلبات:\n`;
+  msgLines += 'الطبق | الكمية | السعر | المجموع | ملاحظة\n';
+  msgLines += order.map(o => {
+    const noteText = o.note ? ` ${o.note}` : '';
+    return `${o.name} | ${o.qty} | ${o.price.toLocaleString()} IQD | ${(o.price*o.qty).toLocaleString()} IQD |${noteText}`;
+  }).join('\n');
+  const total = order.reduce((s,o) => s + o.price*o.qty,0).toLocaleString();
+  msgLines += `\n\nالمجموع الكلي: ${total} IQD\n\nشكراً`;
+
+  const waNumber = '+9647855321655';
+  const waUrl = `https://wa.me/${waNumber.replace('+','')}?text=${encodeURIComponent(msgLines)}`;
   window.open(waUrl, '_blank');
+
   order = [];
   renderOrder();
-  checkoutModal.classList.remove('open');
-};
+  closeCheckoutModal();
+});
+
+  
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ checkoutModal.classList.remove('open'); noteModal.classList.remove('open') } })
 </script>
 </body>
