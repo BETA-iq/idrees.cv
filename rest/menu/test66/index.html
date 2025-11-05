@@ -446,7 +446,7 @@ function openNoteModal(id) {
   noteInput.value = it ? it.note : '';
   noteTitle.innerText = `ملاحظة: ${it ? it.name : ''}`;
   noteModal.classList.add('open');
-  noteModal.setAttribute('aria-hidden', 'false');
+  noteModal.setAttribute('aria-hidden','false');
 }
 
 document.getElementById('cancelNote').addEventListener('click', () => {
@@ -455,30 +455,35 @@ document.getElementById('cancelNote').addEventListener('click', () => {
 });
 
 document.getElementById('saveNote').addEventListener('click', () => {
-  if (noteTargetId !== null) {
-    const it = order.find(o => o.id === noteTargetId);
-    if (it) it.note = noteInput.value.trim();
+  if(noteTargetId === null){
+    noteModal.classList.remove('open');
+    return;
+  }
+  const it = order.find(o => o.id === noteTargetId);
+  if(it){
+    it.note = noteInput.value.trim();
     renderOrder();
   }
   noteModal.classList.remove('open');
   noteTargetId = null;
 });
 
-function openCheckoutModal() {
+function openCheckoutModal(){
   renderOrder();
   checkoutModal.classList.add('open');
-  checkoutModal.setAttribute('aria-hidden', 'false');
+  checkoutModal.setAttribute('aria-hidden','false');
 }
-function closeCheckoutModal() {
-  checkoutModal.classList.remove('open');
-  checkoutModal.setAttribute('aria-hidden', 'true');
-}
-
 cartBtn.addEventListener('click', openCheckoutModal);
 cartBtnSide.addEventListener('click', openCheckoutModal);
 openCheckoutFromSidebar.addEventListener('click', openCheckoutModal);
-closeCheckout.addEventListener('click', closeCheckoutModal);
-document.getElementById('cancelCheckout').addEventListener('click', closeCheckoutModal);
+closeCheckout.addEventListener('click', () => {
+  checkoutModal.classList.remove('open');
+  checkoutModal.setAttribute('aria-hidden','true');
+});
+document.getElementById('cancelCheckout').addEventListener('click', () => {
+  checkoutModal.classList.remove('open');
+  checkoutModal.setAttribute('aria-hidden','true');
+});
 
 const sidebarSlide = document.getElementById('sidebarSlide');
 const panel = document.getElementById('panel');
@@ -487,19 +492,27 @@ document.getElementById('openSide').addEventListener('click', () => {
   sidebarSlide.style.display = 'block';
 });
 document.getElementById('closeSide').addEventListener('click', closeSidebar);
-document.addEventListener('click', e => { if (e.target === sidebarSlide) closeSidebar(); });
 function closeSidebar() {
   panel.classList.remove('open');
-  setTimeout(() => { sidebarSlide.style.display = 'none'; }, 300);
+  setTimeout(() => { sidebarSlide.style.display = 'none' }, 300);
 }
-function saveOrderToStorage() {
-  try { localStorage.setItem('bf_order', JSON.stringify(order)); } catch (e) {}
+document.addEventListener('click', e => { if(e.target===sidebarSlide) closeSidebar() });
+
+document.getElementById('demoMood').addEventListener('click', () => {
+  document.body.animate([{background:varOr('--bg')},{background:'#faf5ff'},{background:varOr('--bg')}],{duration:1200});
+  const all = document.querySelectorAll('.card .thumb');
+  all.forEach((t,i)=> t.animate([{transform:'rotate('+(i%2?4:-4)+'deg)'},{transform:'rotate(0)'}],{duration:700,delay:i*80}));
+});
+function varOr(name){ return getComputedStyle(document.documentElement).getPropertyValue(name) || '#fff'; }
+
+function saveOrderToStorage(){
+  try{ localStorage.setItem('bf_order', JSON.stringify(order)) }catch(e){}
 }
-function loadOrderFromStorage() {
-  try {
-    const d = JSON.parse(localStorage.getItem('bf_order') || '[]');
-    if (Array.isArray(d)) order = d;
-  } catch (e) { order = []; }
+function loadOrderFromStorage(){
+  try{
+    const d = JSON.parse(localStorage.getItem('bf_order')||'[]');
+    if(Array.isArray(d)) order = d;
+  }catch(e){ order = [] }
   renderOrder();
 }
 window.addEventListener('beforeunload', saveOrderToStorage);
@@ -507,37 +520,65 @@ loadOrderFromStorage();
 
 document.getElementById('checkoutForm').addEventListener('submit', e => {
   e.preventDefault();
-  if (order.length === 0) { alert('السلة فارغة!'); return; }
+  if(order.length === 0){ alert('السلة فارغة!'); return; }
 
   const name = document.getElementById('custName').value.trim();
   const phone = document.getElementById('custPhone').value.trim();
   const address = document.getElementById('custAddress').value.trim();
 
-  if (!name) { alert('يرجى إدخال الاسم الكامل'); return; }
-  const phoneDigits = phone.replace(/\D/g, '');
-  if (!/^07\d{9}$/.test(phoneDigits) && !/^7\d{9}$/.test(phoneDigits) && !/^9647\d{9}$/.test(phoneDigits)) {
+  if(!name){ alert('يرجى إدخال الاسم الكامل'); return; }
+  const phoneDigits = phone.replace(/\D/g,'');
+  if(!/^07\d{9}$/.test(phoneDigits) && !/^7\d{9}$/.test(phoneDigits) && !/^9647\d{9}$/.test(phoneDigits)){
     alert('يرجى إدخال رقم هاتف عراقي صحيح');
     return;
   }
-  if (address.split(/\s+/).length < 2) { alert('يرجى كتابة عنوان لا يقل عن كلمتين'); return; }
+  if(address.split(/\s+/).length < 2){ alert('يرجى كتابة عنوان لا يقل عن كلمتين'); return; }
 
-  let msgLines = `طلب جديد\n\nالاسم: ${name}\nالرقم: ${phone}\nالعنوان: ${address}\n\nالطلبات:\n`;
+  let msgLines = 'طلب جديد\n\n';
+  msgLines += `الاسم: ${name}\nالرقم: ${phone}\nالعنوان: ${address}\n\n`;
+  msgLines += 'الطلبات:\n';
   msgLines += 'الطبق | الكمية | السعر | المجموع | ملاحظة\n';
   msgLines += order.map(o => {
     const noteText = o.note ? ` ${o.note}` : '';
     return `${o.name} | ${o.qty} | ${o.price.toLocaleString()} IQD | ${(o.price*o.qty).toLocaleString()} IQD |${noteText}`;
   }).join('\n');
-  const total = order.reduce((s,o) => s + o.price*o.qty,0).toLocaleString();
+
+  const total = order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString();
   msgLines += `\n\nالمجموع الكلي: ${total} IQD\n\nشكراً`;
 
   const waNumber = '+9647855321655';
   const waUrl = `https://wa.me/${waNumber.replace('+','')}?text=${encodeURIComponent(msgLines)}`;
-  window.open(waUrl, '_blank');
+  window.open(waUrl,'_blank');
 
+  checkoutModal.classList.remove('open');
+  checkoutModal.setAttribute('aria-hidden','true');
   order = [];
   renderOrder();
-  closeCheckoutModal();
 });
+
+function renderOrder(){
+  const list = document.getElementById('orderList');
+  list.innerHTML = '';
+  order.forEach(o => {
+    const item = document.createElement('div');
+    item.className = 'order-item';
+    item.innerHTML = `
+      <div>${o.name} x${o.qty} = ${(o.price*o.qty).toLocaleString()} IQD</div>
+      <div class="note-box">${o.note ? o.note : ''}</div>
+      <button onclick="openNoteModal(${o.id})">✎ تعديل الملاحظة</button>
+    `;
+    list.appendChild(item);
+  });
+
+  const notes = document.querySelectorAll('.note-box');
+  notes.forEach(n => {
+    n.style.maxHeight = '50px';
+    n.style.overflowY = 'auto';
+    n.style.border = '1px solid #ccc';
+    n.style.padding = '2px 4px';
+    n.style.marginTop = '2px';
+  });
+}
 
   
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ checkoutModal.classList.remove('open'); noteModal.classList.remove('open') } })
