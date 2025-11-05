@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>قائمة الطعام - بنفش بوتيك</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --main:#1e1e1e;
+  --accent:#ff7f50;
+  --bg:#f5f5f5;
+  --muted:#888;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{background:var(--bg);color:var(--main);line-height:1.4;}
+header{background:var(--main);color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;}
+header h1{font-size:1.2rem;}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:10px;}
+.card{background:#fff;border-radius:8px;padding:10px;position:relative;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.card h4{font-size:14px;margin:5px 0;}
+.card p{font-size:12px;color:var(--muted);}
+.card .price{position:absolute;top:8px;left:8px;font-size:11px;color:var(--accent);font-weight:bold;}
+.card-actions{display:flex;justify-content:space-between;align-items:center;margin-top:5px;}
+.card-actions button{font-size:12px;padding:3px 6px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer;}
+.card .ribbon{position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;padding:2px 6px;font-size:10px;border-radius:4px;}
+.cat{display:inline-block;padding:6px 10px;margin:5px;background:#fff;border-radius:20px;cursor:pointer;font-size:12px;}
+.cat.active{background:var(--accent);color:#fff;}
+#cats,#catsMobile{display:flex;overflow-x:auto;padding:10px;}
+#cartBtn,#cartBtnSide{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#fff;border:none;border-radius:50%;width:50px;height:50px;font-size:18px;cursor:pointer;z-index:1000;}
+#cartCount,#cartCountSide{position:absolute;top:-5px;left:-5px;background:red;color:#fff;width:18px;height:18px;border-radius:50%;font-size:12px;display:flex;justify-content:center;align-items:center;}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.3s;}
+.modal-overlay.open{opacity:1;visibility:visible;}
+.modal-content{background:#fff;width:95%;max-width:500px;max-height:90vh;overflow-y:auto;border-radius:8px;padding:15px;position:relative;}
+.modal-content h3{margin-bottom:10px;}
+.modal-content .close-btn{position:absolute;top:10px;left:10px;border:none;background:none;font-size:18px;cursor:pointer;}
+.order-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #ccc;font-size:13px;}
+.cart-item-controls{display:flex;gap:5px;margin-top:5px;}
+.cart-item-controls button{padding:2px 6px;background:var(--accent);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;}
+.cart-item-controls input{width:40px;text-align:center;border:1px solid #ccc;border-radius:4px;font-size:12px;}
+.note-btn, .remove-btn{padding:2px 6px;margin-left:5px;font-size:11px;border:none;border-radius:4px;cursor:pointer;}
+.note-btn{background:#888;color:#fff;}
+.remove-btn{background:red;color:#fff;}
+input,textarea{width:100%;padding:6px;margin:4px 0;border-radius:4px;border:1px solid #ccc;}
+button.submit-btn{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:14px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>قائمة الطعام - بنفش بوتيك</h1>
+  <button id="cartBtn">🛒<span id="cartCount">0</span></button>
+</header>
+
+<div id="cats"></div>
+<div id="grid"></div>
+
+<!-- المودال للسلة -->
+<div class="modal-overlay" id="checkoutModal" aria-hidden="true">
+  <div class="modal-content">
+    <button class="close-btn" id="closeCheckout">&times;</button>
+    <h3>السلة</h3>
+    <div id="checkoutList"></div>
+    <h4>المجموع: <span id="checkoutTotal">0 IQD</span></h4>
+    <form id="checkoutForm">
+      <input type="text" id="custName" placeholder="الاسم الكامل" required>
+      <input type="text" id="custPhone" placeholder="رقم الهاتف" required>
+      <textarea id="custAddress" placeholder="العنوان" rows="2" required></textarea>
+      <button type="submit" class="submit-btn">إرسال الطلب عبر واتساب</button>
+      <button type="button" id="cancelCheckout" class="submit-btn" style="background:#888;margin-top:5px;">إلغاء</button>
+    </form>
+  </div>
+</div>
+
+<!-- مودال الملاحظة -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal-content">
+    <h3 id="noteTitle">ملاحظة</h3>
+    <textarea id="noteInput" rows="3"></textarea>
+    <button id="saveNote" class="submit-btn">حفظ</button>
+    <button id="cancelNote" class="submit-btn" style="background:#888;margin-top:5px;">إلغاء</button>
+  </div>
+</div>
+
+<script>
+// =========== بيانات القوائم ===========
+const DATA = {
+  categories:['الأكثر مبيعاً','مشاوي','بيتزا','سندويشات','مشروبات','حلويات','سلطات','مقبلات','وجبات سريعة','وجبات عائلية'],
+  dishes:[
+    {id:1,name:'برغر لحم كلاسيكي',cat:'الأكثر مبيعاً',desc:'لحم بقري طازج، جبنة شيدر، صلصة خاصة',price:45000,tag:'شائع'},
+    {id:2,name:'شيش طاووق',cat:'مشاوي',desc:'قطع دجاج متبلة ومشوية على الفحم',price:38000,tag:'مميز'},
+    {id:3,name:'كباب حلبي',cat:'مشاوي',desc:'مفروم لحم مع بهارات خاصة',price:42000,tag:'شائع'},
+    {id:4,name:'بيتزا مارجريتا',cat:'بيتزا',desc:'صوص طماطم، جبنة موزاريلا، ريحان',price:48000,tag:'مفضل'},
+    {id:5,name:'بيتزا بيبروني',cat:'بيتزا',desc:'قطع بيبروني حارة وجبنة موزاريلا',price:52000,tag:'حار'},
+    {id:6,name:'شاورما دجاج',cat:'سندويشات',desc:'شاورما دجاج طازجة مع صلصات',price:27000,tag:'شائع'},
+    {id:7,name:'فاهيتا دجاج',cat:'سندويشات',desc:'خضار مشوية وتتبيلة مميزة',price:30000,tag:'مميز'},
+    {id:8,name:'عصير برتقال طبيعي',cat:'مشروبات',desc:'برتقال طازج مع ثلج',price:10000,tag:'طبيعي'},
+    {id:9,name:'عصير مانجو',cat:'مشروبات',desc:'مانجو ناضجة مخفوقة',price:12000,tag:'طبيعي'},
+    {id:10,name:'تشيز كيك بالتوت',cat:'حلويات',desc:'قوام كريمي مع طبقة توت',price:18000,tag:'حلو'},
+    {id:11,name:'سلطة تبولة',cat:'سلطات',desc:'برغل، بقدونس، طماطم، ليمون',price:9000,tag:'صحي'},
+    {id:12,name:'حمص بالطحينة',cat:'مقبلات',desc:'طحينة أصلية مع لمسة زيت زيتون',price:8000,tag:'تقليدي'},
+    {id:13,name:'بطاطا مقلية',cat:'مقبلات',desc:'مقرمشة مع صوص خاص',price:7000,tag:'شائع'},
+    {id:14,name:'ستيك لحم بقري',cat:'وجبات عائلية',desc:'ستيك متبل ومشوي بحسب اختيارك',price:95000,tag:'فاخر'},
+    {id:15,name:'باستا ألفريدو',cat:'وجبات سريعة',desc:'مكرونة مع صوص كريمي وجبن بارميجيانو',price:36000,tag:'مفضل'}
+  ]
+};
+
+let order=[];
+
+// ======== عناصر DOM ========
+const catsEl=document.getElementById('cats');
+const grid=document.getElementById('grid');
+const checkoutList=document.getElementById('checkoutList');
+const checkoutTotalEl=document.getElementById('checkoutTotal');
+const checkoutModal=document.getElementById('checkoutModal');
+const closeCheckout=document.getElementById('closeCheckout');
+const cartBtn=document.getElementById('cartBtn');
+const noteModal=document.getElementById('noteModal');
+const noteInput=document.getElementById('noteInput');
+const noteTitle=document.getElementById('noteTitle');
+let noteTargetId=null;
+
+// إنشاء فئات
+DATA.categories.forEach((c,i)=>{
+  const el=document.createElement('div');
+  el.className='cat'+(i===0?' active':'');
+  el.innerText=c;
+  el.onclick=()=>{document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderGrid(c);}
+  catsEl.appendChild(el);
+});
+
+// عرض الأصناف
+function renderGrid(filter){
+  grid.innerHTML='';
+  const items=DATA.dishes.filter(d=>!filter||d.cat===filter);
+  items.forEach(d=>{
+    const card=document.createElement('div');card.className='card';
+    card.innerHTML=`<div class="price">${d.price.toLocaleString()} IQD</div><h4>${d.name}</h4><p>${d.desc}</p><div class='card-actions'><button onclick='addToOrder(${d.id})'>أضف</button></div>`;
+    grid.appendChild(card);
+  });
+}
+renderGrid(DATA.categories[0]);
+
+// ====== السلة ======
+function addToOrder(id){
+  const dish=DATA.dishes.find(d=>d.id===id);
+  const existing=order.find(o=>o.id===id);
+  if(existing){existing.qty++}else{order.push({id:dish.id,name:dish.name,price:dish.price,qty:1,note:''})}
+  renderOrder();
+}
+function renderOrder(){
+  checkoutList.innerHTML='';
+  if(order.length===0){checkoutList.innerHTML='<p style="color:var(--muted)">السلة فارغة</p>';checkoutTotalEl.innerText='0 IQD';return;}
+  let total=0;
+  order.forEach(o=>{
+    total+=o.price*o.qty;
+    const row=document.createElement('div');row.className='order-item';
+    row.innerHTML=`<div>${o.name} x${o.qty}</div><div>${(o.price*o.qty).toLocaleString()} IQD</div>`;
+    checkoutList.appendChild(row);
+  });
+  checkoutTotalEl.innerText=total.toLocaleString()+' IQD';
+  checkoutList.style.maxHeight='80vh';checkoutList.style.overflowY='auto';
+}
+
+// فتح وإغلاق السلة
+cartBtn.onclick=()=>{renderOrder();checkoutModal.classList.add('open');checkoutModal.setAttribute('aria-hidden','false');}
+closeCheckout.onclick=()=>{checkoutModal.classList.remove('open');checkoutModal.setAttribute('aria-hidden','true');}
+document.getElementById('cancelCheckout').onclick=()=>{checkoutModal.classList.remove('open');checkoutModal.setAttribute('aria-hidden','true');}
+
+// الملاحظة
+function openNoteModal(id){noteTargetId=id;noteModal.classList.add('open');noteModal.setAttribute('aria-hidden','false');}
+document.getElementById('saveNote').onclick=()=>{if(noteTargetId!==null){const it=order.find(o=>o.id===noteTargetId);if(it){it.note=noteInput.value.trim();renderOrder()}};noteModal.classList.remove('open');noteTargetId=null;}
+document.getElementById('cancelNote').onclick=()=>{noteModal.classList.remove('open');noteTargetId=null;}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){checkoutModal.classList.remove('open');noteModal.classList.remove('open')}});
+
+// إرسال الطلب واتساب
+document.getElementById('checkoutForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const address=document.getElementById('custAddress').value.trim();
+  if(!name||!phone||!address){alert('يرجى ملء جميع الحقول');return;}
+  let msg='طلب جديد:\n\n'+order.map(o=>`${o.name} x${o.qty} => ${(o.price*o.qty).toLocaleString()} IQD`).join('\n')+'\n\nالمجموع: '+order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString()+' IQD';
+  window.open(`https://wa.me/9647800000000?text=${encodeURIComponent(msg)}`,'_blank');
+});
+</script>
+
+</body>
+</html>
