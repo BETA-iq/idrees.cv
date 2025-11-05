@@ -283,43 +283,56 @@ const DATA={
   ]
 }
 
-let order=[]
-const catsEl=document.getElementById('cats')
-const catsMobileEl=document.getElementById('catsMobile')
-const grid=document.getElementById('grid')
-const orderItemsContainer=document.getElementById('orderItems')
-const cartCount=document.getElementById('cartCount')
-const cartCountSide=document.getElementById('cartCountSide')
-const checkoutList=document.getElementById('checkoutList')
-const checkoutTotalEl=document.getElementById('checkoutTotal')
-const checkoutModal=document.getElementById('checkoutModal')
-const closeCheckout=document.getElementById('closeCheckout')
-const cartBtn=document.getElementById('cartBtn')
-const cartBtnSide=document.getElementById('cartBtnSide')
-const openCheckoutFromSidebar=document.getElementById('openCheckoutFromSidebar')
-const noteModal=document.getElementById('noteModal')
-const noteInput=document.getElementById('noteInput')
-const noteTitle=document.getElementById('noteTitle')
-let noteTargetId=null
+let order = [];
 
-DATA.categories.forEach((c,i)=>{
-  const el=document.createElement('div')
-  el.className='cat'+(i===0?' active':'')
-  el.innerHTML=`<span>${c}</span><span style='opacity:.6;font-size:12px'>${DATA.dishes.filter(d=>d.cat===c).length}</span>`
-  el.onclick=()=>{document.querySelectorAll('#cats .cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderGrid(c);closeSidebar()}
-  catsEl.appendChild(el)
-  const el2=el.cloneNode(true)
-  el2.onclick=()=>{document.querySelectorAll('#catsMobile .cat').forEach(x=>x.classList.remove('active'));el2.classList.add('active');renderGrid(c);closeSidebar()}
-  catsMobileEl.appendChild(el2)
-})
-function renderGrid(filter){
-  grid.innerHTML=''
-  const items=DATA.dishes.filter(d=>!filter||d.cat===filter)
-  items.forEach(d=>{
-    const card=document.createElement('article')
-    card.className='card'
-    card.setAttribute('data-id',d.id)
-    card.innerHTML=`
+const catsEl = document.getElementById('cats');
+const catsMobileEl = document.getElementById('catsMobile');
+const grid = document.getElementById('grid');
+const orderItemsContainer = document.getElementById('orderItems');
+const cartCount = document.getElementById('cartCount');
+const cartCountSide = document.getElementById('cartCountSide');
+const checkoutList = document.getElementById('checkoutList');
+const checkoutTotalEl = document.getElementById('checkoutTotal');
+const checkoutModal = document.getElementById('checkoutModal');
+const closeCheckout = document.getElementById('closeCheckout');
+const cartBtn = document.getElementById('cartBtn');
+const cartBtnSide = document.getElementById('cartBtnSide');
+const openCheckoutFromSidebar = document.getElementById('openCheckoutFromSidebar');
+const noteModal = document.getElementById('noteModal');
+const noteInput = document.getElementById('noteInput');
+const noteTitle = document.getElementById('noteTitle');
+let noteTargetId = null;
+
+DATA.categories.forEach((c, i) => {
+  const el = document.createElement('div');
+  el.className = 'cat' + (i === 0 ? ' active' : '');
+  el.innerHTML = `<span>${c}</span><span style='opacity:.6;font-size:12px'>${DATA.dishes.filter(d => d.cat === c).length}</span>`;
+  el.onclick = () => {
+    document.querySelectorAll('#cats .cat').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    renderGrid(c);
+    closeSidebar();
+  };
+  catsEl.appendChild(el);
+
+  const el2 = el.cloneNode(true);
+  el2.onclick = () => {
+    document.querySelectorAll('#catsMobile .cat').forEach(x => x.classList.remove('active'));
+    el2.classList.add('active');
+    renderGrid(c);
+    closeSidebar();
+  };
+  catsMobileEl.appendChild(el2);
+});
+
+function renderGrid(filter) {
+  grid.innerHTML = '';
+  const items = DATA.dishes.filter(d => !filter || d.cat === filter);
+  items.forEach(d => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.setAttribute('data-id', d.id);
+    card.innerHTML = `
       <div class="price">${d.price.toLocaleString()} IQD</div>
       <div class="thumb">${d.name.split(' ').slice(0,3).join(' ')}</div>
       <h4>${d.name}</h4>
@@ -330,177 +343,182 @@ function renderGrid(filter){
           <button class='btn-ghost' onclick='addToOrder(${d.id}, event)'>أضف</button>
         </div>
       </div>
-      <div class='ribbon' style='display:${d.tag?"block":"none"}'>${d.tag}</div>`
-    grid.appendChild(card)
-  })
+      <div class='ribbon' style='display:${d.tag?"block":"none"}'>${d.tag}</div>`;
+    grid.appendChild(card);
+  });
 }
-renderGrid(DATA.categories[0])
-document.getElementById('search').addEventListener('input',e=>{
-  const q=e.target.value.trim()
-  if(!q) return renderGrid(document.querySelector('#cats .cat.active').innerText)
-  grid.innerHTML=''
-  const res=DATA.dishes.filter(d=>(d.name + ' ' + d.desc).toLowerCase().includes(q.toLowerCase()))
-  res.forEach(d=>{
-    const card=document.createElement('article');card.className='card'
-    card.innerHTML=`<div class="price">${d.price.toLocaleString()} IQD</div><div class="thumb">${d.name.split(' ').slice(0,3).join(' ')}</div><h4>${d.name}</h4><p>${d.desc}</p><div class='card-actions'><small style='color:var(--muted)'>${d.tag}</small><div><button class='btn-ghost' onclick='openModal(${d.id}, event)'>عرض</button> <button class='btn-ghost' onclick='addToOrder(${d.id}, event)'>أضف</button></div></div><div class='ribbon'>${d.tag}</div>`
-    grid.appendChild(card)
-  })
-})
-const modal=document.getElementById('modal')
-let currentModalId=null
-function openModal(id,e){ if(e) e.stopPropagation(); const dish=DATA.dishes.find(x=>x.id===id); currentModalId=id; 
-  const html = `
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-      <div style="width:140px;height:120px;border-radius:10px;background:linear-gradient(120deg,rgba(139,92,246,0.06),rgba(139,92,246,0.02));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--main)">
-        ${dish.name.split(' ').slice(0,3).join(' ')}
-      </div>
-      <div style="flex:1">
-        <p style="margin:0 0 6px 0;color:var(--muted)">${dish.desc}</p>
-        <p style="margin:0;font-weight:800">السعر: ${dish.price.toLocaleString()} IQD</p>
-        <p style="margin:8px 0 0 0;font-size:13px;color:var(--muted)">اضغط "أضف" لإضافته مباشرة للسلة</p>
-      </div>
-    </div>`
+renderGrid(DATA.categories[0]);
+
+document.getElementById('search').addEventListener('input', e => {
+  const q = e.target.value.trim();
+  if(!q) return renderGrid(document.querySelector('#cats .cat.active').innerText);
+  grid.innerHTML = '';
+  const res = DATA.dishes.filter(d => (d.name + ' ' + d.desc).toLowerCase().includes(q.toLowerCase()));
+  res.forEach(d => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `<div class="price">${d.price.toLocaleString()} IQD</div><div class="thumb">${d.name.split(' ').slice(0,3).join(' ')}</div><h4>${d.name}</h4><p>${d.desc}</p><div class='card-actions'><small style='color:var(--muted)'>${d.tag}</small><div><button class='btn-ghost' onclick='openModal(${d.id}, event)'>عرض</button> <button class='btn-ghost' onclick='addToOrder(${d.id}, event)'>أضف</button></div></div><div class='ribbon'>${d.tag}</div>`;
+    grid.appendChild(card);
+  });
+});
+
+const modal = document.getElementById('modal');
+let currentModalId = null;
+function openModal(id,e){ 
+  if(e) e.stopPropagation(); 
+  const dish = DATA.dishes.find(x=>x.id===id);
+  currentModalId = id;
   if(confirm(`${dish.name}\n\n${dish.desc}\n\nالسعر: ${dish.price.toLocaleString()} IQD\n\nهل تود إضافة هذا الطبق للسلة؟`)){
-    addToOrder(id)
+    addToOrder(id);
   }
 }
+
 function addToOrder(id,e){
-  if(e) e.stopPropagation()
-  const dish=DATA.dishes.find(x=>x.id===id)
-  const existing=order.find(o=>o.id===id)
+  if(e) e.stopPropagation();
+  const dish = DATA.dishes.find(x=>x.id===id);
+  const existing = order.find(o=>o.id===id);
   if(existing){ existing.qty++ } else { order.push({id:dish.id,name:dish.name,price:dish.price,qty:1,note:''}) }
-  renderOrder()
-  animateCard(id)
+  renderOrder();
+  animateCard(id);
 }
 function animateCard(id){
-  const card=document.querySelector(`.card[data-id='${id}']`)
+  const card = document.querySelector(`.card[data-id='${id}']`);
   if(card){ card.animate([{transform:'scale(1)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],{duration:260}) }
 }
-function renderOrder(){
-  const container=orderItemsContainer
-  container.innerHTML=''
-  if(order.length===0){
-    container.innerHTML=`<p style="color:var(--muted);font-size:13px">السلة فارغة - أضف أطباقاً من اليمين</p>`
-    document.getElementById('total').innerText='0 IQD'
-  } else {
-    let total=0
-    order.forEach(o=>{
-      total+=o.price*o.qty
-      const el=document.createElement('div'); el.className='order-item'
-      el.innerHTML=`<div style="display:flex;flex-direction:column"><strong>${o.name}</strong><div style="font-size:13px;color:var(--muted)">x${o.qty}</div></div><div style="text-align:left;min-width:120px"><div>${(o.price*o.qty).toLocaleString()} IQD</div></div>`
-      container.appendChild(el)
-    })
-    document.getElementById('total').innerText=total.toLocaleString()+' IQD'
-  }
-  checkoutList.innerHTML=''
-  if(order.length===0){
-    checkoutList.innerHTML=`<p style="color:var(--muted);font-size:13px">السلة فارغة - أضف أطباقاً من اليمين</p>`
-    checkoutTotalEl.innerText='0 IQD'
-  } else {
-    let total=0
-    order.forEach(o=>{
-      total+=o.price*o.qty
-      const wrapper=document.createElement('div')
-      wrapper.style.display='flex'
-      wrapper.style.justifyContent='space-between'
-      wrapper.style.padding='8px 0'
-      wrapper.style.borderBottom='1px dashed rgba(15,23,42,0.04)'
-      const left=document.createElement('div'); left.style.display='flex'; left.style.flexDirection='column'
-      const title=document.createElement('strong'); title.innerText=o.name
-      const noteText=document.createElement('div'); noteText.style.fontSize='13px'; noteText.style.color='var(--muted)'; noteText.innerText=o.note?`ملاحظة: ${o.note}`:''
-      const qtyControls=document.createElement('div'); qtyControls.className='cart-item-controls'
-      const minus=document.createElement('button'); minus.className='btn-ghost'; minus.innerText='-'; minus.onclick=()=>{decreaseQty(o.id)}
-      const input=document.createElement('input'); input.className='qty-input'; input.type='number'; input.min=1; input.value=o.qty; input.onchange=(e)=>{setQty(o.id,parseInt(e.target.value)||1)}
-      const plus=document.createElement('button'); plus.className='btn-ghost'; plus.innerText='+'; plus.onclick=()=>{increaseQty(o.id)}
-      qtyControls.appendChild(minus); qtyControls.appendChild(input); qtyControls.appendChild(plus)
-      left.appendChild(title); left.appendChild(noteText); left.appendChild(qtyControls)
-      const right=document.createElement('div'); right.style.textAlign='left'; right.style.minWidth='140px'
-      const priceLine=document.createElement('div'); priceLine.innerText=(o.price*o.qty).toLocaleString()+' IQD'
-      const actions=document.createElement('div'); actions.style.marginTop='8px'
-      const noteBtn=document.createElement('button'); noteBtn.className='note-btn'; noteBtn.innerText='ملاحظة'; noteBtn.onclick=()=>{openNoteModal(o.id)}
-      const removeBtn=document.createElement('button'); removeBtn.className='remove-btn'; removeBtn.innerText='حذف'; removeBtn.onclick=()=>{removeItem(o.id)}
-      actions.appendChild(noteBtn); actions.appendChild(removeBtn)
-      right.appendChild(priceLine); right.appendChild(actions)
 
-      wrapper.appendChild(left); wrapper.appendChild(right)
-      checkoutList.appendChild(wrapper)
-    })
-    checkoutTotalEl.innerText=total.toLocaleString()+' IQD'
+function renderOrder(){
+  const container = orderItemsContainer;
+  container.innerHTML = '';
+  if(order.length === 0){
+    container.innerHTML = `<p style="color:var(--muted);font-size:13px">السلة فارغة - أضف أطباقاً من اليمين</p>`;
+    document.getElementById('total').innerText='0 IQD';
+  } else {
+    let total = 0;
+    order.forEach(o=>{
+      total += o.price*o.qty;
+      const el = document.createElement('div'); 
+      el.className='order-item';
+      el.innerHTML = `<div style="display:flex;flex-direction:column"><strong>${o.name}</strong><div style="font-size:13px;color:var(--muted)">x${o.qty}</div></div><div style="text-align:left;min-width:120px"><div>${(o.price*o.qty).toLocaleString()} IQD</div></div>`;
+      container.appendChild(el);
+    });
+    document.getElementById('total').innerText=total.toLocaleString()+' IQD';
   }
-  const count = order.reduce((s,o)=>s+o.qty,0)
-  cartCount.innerText = count
-  cartCountSide.innerText = count
-  saveOrderToStorage()
+
+  checkoutList.innerHTML = '';
+  if(order.length === 0){
+    checkoutList.innerHTML = `<p style="color:var(--muted);font-size:13px">السلة فارغة - أضف أطباقاً من اليمين</p>`;
+    checkoutTotalEl.innerText = '0 IQD';
+  } else {
+    let total = 0;
+    order.forEach(o=>{
+      total += o.price*o.qty;
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.justifyContent = 'space-between';
+      wrapper.style.padding = '8px 0';
+      wrapper.style.borderBottom = '1px dashed rgba(15,23,42,0.04)';
+
+      const left = document.createElement('div');
+      left.style.display = 'flex';
+      left.style.flexDirection = 'column';
+
+      const title = document.createElement('strong'); title.innerText = o.name;
+      const noteText = document.createElement('div'); noteText.style.fontSize='13px'; noteText.style.color='var(--muted)'; noteText.innerText=o.note?`ملاحظة: ${o.note}`:'';
+
+      const qtyControls = document.createElement('div'); qtyControls.className='cart-item-controls';
+      const minus = document.createElement('button'); minus.className='btn-ghost'; minus.innerText='-'; minus.onclick=()=>{decreaseQty(o.id)};
+      const input = document.createElement('input'); input.className='qty-input'; input.type='number'; input.min=1; input.value=o.qty; input.onchange=(e)=>{setQty(o.id,parseInt(e.target.value)||1)};
+      const plus = document.createElement('button'); plus.className='btn-ghost'; plus.innerText='+'; plus.onclick=()=>{increaseQty(o.id)};
+      qtyControls.appendChild(minus); qtyControls.appendChild(input); qtyControls.appendChild(plus);
+
+      left.appendChild(title); left.appendChild(noteText); left.appendChild(qtyControls);
+
+      const right = document.createElement('div'); right.style.textAlign='left'; right.style.minWidth='140px';
+      const priceLine = document.createElement('div'); priceLine.innerText=(o.price*o.qty).toLocaleString()+' IQD';
+
+      const actions = document.createElement('div'); actions.style.marginTop='8px';
+      const noteBtn = document.createElement('button'); noteBtn.className='note-btn'; noteBtn.innerText='ملاحظة'; noteBtn.onclick=()=>{openNoteModal(o.id)};
+      const removeBtn = document.createElement('button'); removeBtn.className='remove-btn'; removeBtn.innerText='حذف'; removeBtn.onclick=()=>{removeItem(o.id)};
+      actions.appendChild(noteBtn); actions.appendChild(removeBtn);
+
+      right.appendChild(priceLine); right.appendChild(actions);
+
+      wrapper.appendChild(left); wrapper.appendChild(right);
+      checkoutList.appendChild(wrapper);
+    });
+    checkoutTotalEl.innerText = total.toLocaleString()+' IQD';
+
+    checkoutList.style.maxHeight = '80vh';
+    checkoutList.style.overflowY = 'auto';
+  }
+
+  const count = order.reduce((s,o)=>s+o.qty,0);
+  cartCount.innerText = count;
+  cartCountSide.innerText = count;
+  saveOrderToStorage();
 }
+
 function increaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty++; renderOrder() } }
 function decreaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty--; if(i.qty<=0){ order.splice(order.indexOf(i),1) } renderOrder() } }
 function setQty(id,val){ if(val<1) val=1; const i=order.find(o=>o.id===id); if(i){ i.qty=val; renderOrder() } }
 function removeItem(id){ const i=order.find(o=>o.id===id); if(i){ order.splice(order.indexOf(i),1); renderOrder() } }
-function openNoteModal(id){ noteTargetId=id; const it=order.find(o=>o.id===id); noteInput.value=it?it.note:''; noteTitle.innerText=`ملاحظة: ${it?it.name:''}`; noteModal.classList.add('open') }
-document.getElementById('cancelNote').addEventListener('click',()=>{ noteModal.classList.remove('open'); noteTargetId=null })
-document.getElementById('saveNote').addEventListener('click',()=>{
+
+function openNoteModal(id){ 
+  noteTargetId=id; 
+  const it=order.find(o=>o.id===id); 
+  noteInput.value = it ? it.note : '';
+  noteTitle.innerText = `ملاحظة: ${it ? it.name : ''}`;
+  noteModal.classList.add('open'); 
+}
+document.getElementById('cancelNote').addEventListener('click', ()=>{ noteModal.classList.remove('open'); noteTargetId=null });
+document.getElementById('saveNote').addEventListener('click', ()=>{
   if(noteTargetId===null){ noteModal.classList.remove('open'); return }
   const it=order.find(o=>o.id===noteTargetId); if(it){ it.note=noteInput.value.trim(); renderOrder() }
-  noteModal.classList.remove('open'); noteTargetId=null
-})
-cartBtn.addEventListener('click', openCheckoutModal)
-cartBtnSide.addEventListener('click', openCheckoutModal)
-openCheckoutFromSidebar.addEventListener('click', openCheckoutModal)
-closeCheckout.addEventListener('click', ()=>{ checkoutModal.classList.remove('open'); checkoutModal.setAttribute('aria-hidden','true') })
-document.getElementById('cancelCheckout').addEventListener('click', ()=>{ checkoutModal.classList.remove('open'); checkoutModal.setAttribute('aria-hidden','true') })
+  noteModal.classList.remove('open'); noteTargetId=null;
+});
+
+cartBtn.addEventListener('click', openCheckoutModal);
+cartBtnSide.addEventListener('click', openCheckoutModal);
+openCheckoutFromSidebar.addEventListener('click', openCheckoutModal);
+closeCheckout.addEventListener('click', ()=>{ checkoutModal.classList.remove('open'); checkoutModal.setAttribute('aria-hidden','true') });
+document.getElementById('cancelCheckout').addEventListener('click', ()=>{ checkoutModal.classList.remove('open'); checkoutModal.setAttribute('aria-hidden','true') });
+
 function openCheckoutModal(){
-  renderOrder()
-  checkoutModal.classList.add('open')
-  checkoutModal.setAttribute('aria-hidden','false')}
-const sidebarSlide=document.getElementById('sidebarSlide'),panel=document.getElementById('panel')
-document.getElementById('openSide').addEventListener('click',()=>{
-  panel.classList.add('open'); 
-  sidebarSlide.style.display='block';
-})
-document.getElementById('closeSide').addEventListener('click',()=>{
-  panel.classList.remove('open'); 
-  setTimeout(()=>{sidebarSlide.style.display='none'}, 300);
-})
-sidebarSlide.addEventListener('click',(e)=>{
-  if(e.target===sidebarSlide){
-    panel.classList.remove('open'); 
-    setTimeout(()=>{sidebarSlide.style.display='none'}, 300);
-  }
-})
-function saveOrderToStorage(){
-  localStorage.setItem('order', JSON.stringify(order))
+  renderOrder();
+  checkoutModal.classList.add('open');
+  checkoutModal.setAttribute('aria-hidden','false');
 }
-function loadOrderFromStorage(){
-  const data = localStorage.getItem('order')
-  if(data){ order = JSON.parse(data); renderOrder() }
-}
-loadOrderFromStorage()
+
+function saveOrderToStorage(){ localStorage.setItem('order', JSON.stringify(order)) }
+function loadOrderFromStorage(){ const data=localStorage.getItem('order'); if(data){ order=JSON.parse(data); renderOrder() } }
+loadOrderFromStorage();
+
 document.getElementById('checkoutForm').addEventListener('submit', e=>{
-  e.preventDefault()
-  const name=document.getElementById('custName').value.trim()
-  const phone=document.getElementById('custPhone').value.trim()
-  const address=document.getElementById('custAddress').value.trim()
+  e.preventDefault();
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const address=document.getElementById('custAddress').value.trim();
   if(!name){alert('يرجى إدخال الاسم الكامل');return}
-  const phoneDigits=phone.replace(/\D/g,'')
-  if(!/^07\d{9}$/.test(phoneDigits) && !/^7\d{9}$/.test(phoneDigits) && !/^9647\d{9}$/.test(phoneDigits)){alert('يرجى إدخال رقم هاتف عراقي صحيح');return}
+  const phoneDigits=phone.replace(/\D/g,'');
+  if(!/^07\d{8,9}$/.test(phoneDigits) && !/^7\d{8,9}$/.test(phoneDigits) && !/^9647\d{8,9}$/.test(phoneDigits)){alert('يرجى إدخال رقم هاتف عراقي صحيح');return}
   if(address.split(/\s+/).length<2){alert('يرجى كتابة عنوان لا يقل عن كلمتين');return}
-  let msgLines='طلب جديد\n\n'
-  msgLines+=`الاسم: ${name}\nالرقم: ${phone}\nالعنوان: ${address}\n\n`
-  msgLines+='الطلبات:\n'
-  msgLines+='الطبق | الكمية | السعر | المجموع | ملاحظة\n'
+  let msgLines='طلب جديد\n\n';
+  msgLines+=`الاسم: ${name}\nالرقم: ${phone}\nالعنوان: ${address}\n\nالطلبات:\n`;
+  msgLines+='الطبق | الكمية | السعر | المجموع | ملاحظة\n';
   msgLines+=order.map(o=>{
-    const noteText=o.note?` ${o.note}`:''
-    return `${o.name} | ${o.qty} | ${o.price.toLocaleString()} IQD | ${(o.price*o.qty).toLocaleString()} IQD |${noteText}`
-  }).join('\n')
-  const total=order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString()
-  msgLines+=`\n\nالمجموع الكلي: ${total} IQD\n\nشكراً`
-  const waNumber='+9647855321655'
-  const waUrl=`https://wa.me/${waNumber.replace('+','')}?text=${encodeURIComponent(msgLines)}`
-  window.open(waUrl,'_blank')
-  checkoutModal.classList.remove('open')
-  checkoutModal.setAttribute('aria-hidden','true')
-})
-document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ checkoutModal.classList.remove('open'); noteModal.classList.remove('open') } })
+    const noteText=o.note?` ${o.note}`:'';
+    return `${o.name} | ${o.qty} | ${o.price.toLocaleString()} IQD | ${(o.price*o.qty).toLocaleString()} IQD |${noteText}`;
+  }).join('\n');
+  const total=order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString();
+  msgLines+=`\n\nالمجموع الكلي: ${total} IQD\n\nشكراً`;
+  const waNumber='+9647855321655';
+  const waUrl=`https://wa.me/${waNumber.replace('+','')}?text=${encodeURIComponent(msgLines)}`;
+  window.open(waUrl,'_blank');
+  checkoutModal.classList.remove('open');
+  checkoutModal.setAttribute('aria-hidden','true');
+});
+
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ checkoutModal.classList.remove('open'); noteModal.classList.remove('open') } });
 </script>
 </body>
 </html>
