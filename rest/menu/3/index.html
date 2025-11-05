@@ -62,7 +62,7 @@ html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-
 .form-row{display:flex;gap:8px;flex-wrap:wrap}
 .form-group{display:flex;flex-direction:column;gap:6px;flex:1}
 .input,textarea{padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);outline:none}
-textarea{resize:vertical;min-height:70px}
+textarea{resize:vertical;min-height:75px}
 .footer-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 .bg-glow{position:fixed;left:50%;top:8%;width:520px;height:280px;border-radius:48%;transform:translateX(-50%);filter:blur(48px);opacity:0.12;background:radial-gradient(circle at 30% 30%,var(--accent),transparent 20%),radial-gradient(circle at 70% 70%,var(--main),transparent 30%);pointer-events:none;z-index:0}
 .sidebar-slide{position:fixed;inset:0;display:none;z-index:80}
@@ -120,7 +120,7 @@ textarea{resize:vertical;min-height:70px}
 /* very small screens: make the sheet show slight margin so background peeks */
 @media (max-width:480px){
   .sheet{width:calc(100vw - 14px);height:calc(100vh - 14px);padding:10px}
-  #checkoutList{max-height:20vh}
+  #checkoutList{max-height:30vh}
   textarea#orderNote{min-height:52px}
 }
 
@@ -193,15 +193,7 @@ textarea{resize:vertical;min-height:70px}
   </div>
 </div>
 
-<!-- checkout modal -->
-<div class="modal" id="checkoutModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
-  <div class="sheet" role="document">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <h3 id="checkoutTitle" style="font-size:20px">سلة الطلب وبيانات الوصول</h3>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="closeCheckout" class="btn-ghost" aria-label="إغلاق السلة">إغلاق</button>
-      </div>
-    </div>
+
 
     <div style="display:flex;gap:14px;flex-wrap:wrap">
       <div style="flex:1;min-width:240px">
