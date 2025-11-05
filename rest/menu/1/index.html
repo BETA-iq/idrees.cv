@@ -444,7 +444,6 @@ document.getElementById('saveNote').addEventListener('click',()=>{
   const it=order.find(o=>o.id===noteTargetId); if(it){ it.note=noteInput.value.trim(); renderOrder() }
   noteModal.classList.remove('open'); noteTargetId=null
 })
-
 cartBtn.addEventListener('click', openCheckoutModal)
 cartBtnSide.addEventListener('click', openCheckoutModal)
 openCheckoutFromSidebar.addEventListener('click', openCheckoutModal)
@@ -455,19 +454,27 @@ function openCheckoutModal(){
   checkoutModal.classList.add('open')
   checkoutModal.setAttribute('aria-hidden','false')}
 const sidebarSlide=document.getElementById('sidebarSlide'),panel=document.getElementById('panel')
-document.getElementById('openSide').addEventListener('click',()=>{ panel.classList.add('open'); sidebarSlide.style.display='block' })
-document.getElementById('closeSide').addEventListener('click',closeSidebar)
-function closeSidebar(){ panel.classList.remove('open'); setTimeout(()=>{sidebarSlide.style.display='none'},300) }
-document.addEventListener('click',e=>{ if(e.target===sidebarSlide){ closeSidebar() } })
-document.getElementById('demoMood').addEventListener('click',()=>{
-  document.body.animate([{background:varOr('--bg')},{background:'#faf5ff'},{background:varOr('--bg')}],{duration:1200})
-  const all=document.querySelectorAll('.card .thumb')
-  all.forEach((t,i)=>t.animate([{transform:'rotate('+(i%2?4:-4)+'deg)'},{transform:'rotate(0)'}],{duration:700,delay:i*80}))
+document.getElementById('openSide').addEventListener('click',()=>{
+  panel.classList.add('open'); 
+  sidebarSlide.style.display='block';
 })
-function varOr(name){return getComputedStyle(document.documentElement).getPropertyValue(name) || '#fff'}
-function saveOrderToStorage(){ try{ localStorage.setItem('bf_order', JSON.stringify(order)) }catch(e){} }
-function loadOrderFromStorage(){ try{ const d = JSON.parse(localStorage.getItem('bf_order')||'[]'); if(Array.isArray(d)) order=d; }catch(e){ order=[] } renderOrder() }
-window.addEventListener('beforeunload', saveOrderToStorage)
+document.getElementById('closeSide').addEventListener('click',()=>{
+  panel.classList.remove('open'); 
+  setTimeout(()=>{sidebarSlide.style.display='none'}, 300);
+})
+sidebarSlide.addEventListener('click',(e)=>{
+  if(e.target===sidebarSlide){
+    panel.classList.remove('open'); 
+    setTimeout(()=>{sidebarSlide.style.display='none'}, 300);
+  }
+})
+function saveOrderToStorage(){
+  localStorage.setItem('order', JSON.stringify(order))
+}
+function loadOrderFromStorage(){
+  const data = localStorage.getItem('order')
+  if(data){ order = JSON.parse(data); renderOrder() }
+}
 loadOrderFromStorage()
 document.getElementById('checkoutForm').addEventListener('submit', e=>{
   e.preventDefault()
