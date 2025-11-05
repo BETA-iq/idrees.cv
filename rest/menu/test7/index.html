@@ -19,7 +19,7 @@
   --glass-blur: 10px;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-gradient(180deg,var(--bg),#fbf8ff);color:var(--text);-webkit-font-smoothing:antialiased}
+html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background: linear-gradient(180deg,#0f1724,#0f1724);color:var(--text);-webkit-font-smoothing:antialiased}
 .app{max-width:1200px;margin:28px auto;padding:18px;display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
 .header{display:none;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.85));border:1px solid rgba(0,0,0,0.04);box-shadow:var(--shadow)}
 .brand{display:flex;align-items:center;gap:12px}
@@ -30,7 +30,7 @@ html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-
 .container{display:contents}
 .sidebar{background:linear-gradient(180deg,rgba(255,255,255,0.94),rgba(255,255,255,0.9));border-radius:var(--card-radius);padding:18px;backdrop-filter: blur(var(--glass-blur));border:1px solid var(--glass-border);box-shadow:var(--shadow)}
 .brand-compact{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.categories{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.categories{max-height: 300px;overflow-y: auto;display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .cat{padding:12px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border:1px solid transparent;transition:all .18s}
 .cat:hover{transform:translateX(-6px)}
 .cat.active{background:linear-gradient(90deg,rgba(139,92,246,0.12),rgba(139,92,246,0.06));border-color:rgba(139,92,246,0.18)}
@@ -66,6 +66,7 @@ textarea{resize:vertical;min-height:80px}
 .footer-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 .bg-glow{position:fixed;left:50%;top:8%;width:520px;height:280px;border-radius:48%;transform:translateX(-50%);filter:blur(48px);opacity:0.12;background:radial-gradient(circle at 30% 30%,var(--accent),transparent 20%),radial-gradient(circle at 70% 70%,var(--main),transparent 30%);pointer-events:none;z-index:0}
 .sidebar-slide{position:fixed;inset:0;display:none;z-index:80}
+.sidebar-slide.open-bg{background: rgba(0,0,0,0.3);display:block;}
 .sidebar-panel{position:fixed;right:0;top:0;height:100%;width:320px;background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,255,255,0.92));box-shadow: -20px 0 40px rgba(16,24,40,0.12);padding:18px;transform:translateX(100%);transition:transform .28s}
 .sidebar-panel.open{transform:translateX(0)}
 .close-side{display:flex;justify-content:flex-end}
@@ -100,7 +101,6 @@ textarea{resize:vertical;min-height:80px}
   </div>
   <div class="controls">
     <button class="menu-btn btn-primary" id="openSide">☰ قائمة</button>
-    <!-- زر السلة الموحد للموبايل / الهيدر -->
     <button id="openCartBtn" class="cart-btn" aria-label="عرض السلة">
       🛒 <span id="cartCountHeader" class="cart-badge" style="display:none">0</span>
     </button>
@@ -234,7 +234,12 @@ DATA.categories.forEach((c,i)=>{
   const el=document.createElement('div')
   el.className='cat'+(i===0?' active':'')
   el.innerHTML=`<span>${c}</span><span style='opacity:.6;font-size:12px'>${DATA.dishes.filter(d=>d.cat===c).length}</span>`
-  el.onclick=()=>{document.querySelectorAll('#cats .cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderGrid(c);closeSidebar()}
+el.onclick = () => {
+  document.querySelectorAll('#cats .cat').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  renderGrid(c);
+  closeSidebar();
+}
   catsEl.appendChild(el)
   const el2=el.cloneNode(true)
   el2.onclick=()=>{document.querySelectorAll('#catsMobile .cat').forEach(x=>x.classList.remove('active'));el2.classList.add('active');renderGrid(c);closeSidebar()}
@@ -351,9 +356,16 @@ document.getElementById('demoMood').addEventListener('click',()=>{
 function varOr(name){return getComputedStyle(document.documentElement).getPropertyValue(name) || '#fff'}
 
 const sidebarSlide=document.getElementById('sidebarSlide'),panel=document.getElementById('panel')
-document.getElementById('openSide').addEventListener('click',()=>{panel.classList.add('open');sidebarSlide.style.display='block'})
+document.getElementById('openSide').addEventListener('click',()=>{
+  panel.classList.add('open');
+  sidebarSlide.classList.add('open-bg');
+});
 document.getElementById('closeSide').addEventListener('click',closeSidebar)
-function closeSidebar(){panel.classList.remove('open');setTimeout(()=>{sidebarSlide.style.display='none'},300)}
+function closeSidebar(){
+  panel.classList.remove('open');
+  sidebarSlide.classList.remove('open-bg');
+  setTimeout(()=>{sidebarSlide.style.display='none'},300)
+}
 document.addEventListener('click',e=>{if(e.target===sidebarSlide){closeSidebar()}})
 
 let noteTargetId=null
