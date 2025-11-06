@@ -154,7 +154,7 @@ textarea {
     <div class="brand-compact">
       <div class="logo">ب</div>
       <div>
-        <h1>حسن علي يونس</h1>
+        <h1>ادريس - تست مطاعم</h1>
         <div style="font-size:13px;color:var(--muted)">قائمة تفاعلية</div>
       </div>
     </div>
@@ -483,7 +483,7 @@ document.getElementById('checkoutForm').addEventListener('submit', e=>{
   order.forEach(o=>{ msg += `${o.name} x${o.qty} - ${(o.price*o.qty).toLocaleString()} IQD${o.note?` (ملاحظة: ${o.note})`:''}%0A` })
   msg += `--------------------------------%0Aالمجموع الكلي: ${order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString()} IQD`
 
-  const whatsappUrl = `https://wa.me/?text=${msg}`
+  const whatsappUrl = `https://wa.me/?send=${msg}`
   window.open(whatsappUrl,'_blank')
   order=[]
   renderOrder()
