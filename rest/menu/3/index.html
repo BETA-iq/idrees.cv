@@ -37,7 +37,7 @@ html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-
 .order{margin-top:16px;padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.82));border:1px solid var(--glass-border)}
 .order h3{margin:0 0 10px 0}
 .items{max-height:320px;overflow:auto;padding-right:6px}
-.order-item{display:flex;justify-content:space-between;gap:8px;padding:6px 4px;border-bottom:1px dashed rgba(15,23,42,0.04);align-items:center}
+.order-item{display:flex;justify-content:space-between;gap:8px;padding:10px 6px;border-bottom:1px dashed rgba(15,23,42,0.04);align-items:center}
 .order-total{display:flex;justify-content:space-between;margin-top:12px;font-weight:800}
 .btn{display:inline-block;padding:10px 14px;border-radius:10px;text-decoration:none;border:none;cursor:pointer}
 .btn-primary{background:linear-gradient(90deg,var(--accent),var(--main));color:#fff;box-shadow:0 12px 30px rgba(107,33,168,0.12);font-weight:700}
@@ -59,11 +59,11 @@ html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-
 .modal.open{visibility:visible;opacity:1}
 .sheet{width:720px;max-width:96%;background:#fff;border-radius:12px;padding:18px;border:1px solid rgba(0,0,0,0.04);box-shadow:0 30px 60px rgba(16,24,40,0.08);transform:translateY(20px);transition:transform .22s;max-height:80vh;overflow:hidden}
 .modal.open .sheet{transform:translateY(0)}
-.form-row{display:flex;gap:6px;flex-wrap:wrap}
+.form-row{display:flex;gap:8px;flex-wrap:wrap}
 .form-group{display:flex;flex-direction:column;gap:6px;flex:1}
 .input,textarea{padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);outline:none}
 textarea{resize:vertical;min-height:75px}
-.footer-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:6px}
+.footer-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 .bg-glow{position:fixed;left:50%;top:8%;width:520px;height:280px;border-radius:48%;transform:translateX(-50%);filter:blur(48px);opacity:0.12;background:radial-gradient(circle at 30% 30%,var(--accent),transparent 20%),radial-gradient(circle at 70% 70%,var(--main),transparent 30%);pointer-events:none;z-index:0}
 .sidebar-slide{position:fixed;inset:0;display:none;z-index:80}
 .sidebar-panel{position:fixed;right:0;top:0;height:100%;width:320px;background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,255,255,0.92));box-shadow: -20px 0 40px rgba(16,24,40,0.12);padding:18px;transform:translateX(100%);transition:transform .28s}
@@ -85,7 +85,7 @@ textarea{resize:vertical;min-height:75px}
 }
 .sheet h3, .sheet h4 { margin: 0 0 8px 0; line-height:1.05; }
 .order-note-small{min-height:54px;max-height:90px;}
-#checkoutList{max-height: 25vh;padding-right:6px}
+#checkoutList{max-height:320px;overflow:auto;padding-right:6px}
 @media (max-width: 900px){
   .app{margin:12px auto;padding:8px;grid-template-columns:1fr}
   .header{display:flex;margin-bottom:12px}
@@ -97,21 +97,17 @@ textarea{resize:vertical;min-height:75px}
   .modal.open .sheet{transform:translateY(0)}
   .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
   #checkoutList{max-height:30vh}
-  textarea#orderNote { min-height:40px; max-height:80px; }
+  textarea#orderNote{min-height:60px;max-height:100px}
   .sheet h3{font-size:18px}
   .cart-toggle{padding:7px 9px}
   .cart-badge{min-width:20px;height:20px;font-size:12px}
   .btn, .btn-ghost, .btn-primary{padding:10px 12px}
 }
-
 @media (max-width:480px){
   .sheet{width:calc(100vw - 14px);height:calc(100vh - 14px);padding:10px}
   #checkoutList{max-height:30vh}
   textarea#orderNote{min-height:52px}
 }
-#checkoutList p, .order-item strong, .order-item div { font-size:12px; }
-
-.sheet { width: 500px; max-width:90%; }
 .dark{--bg:#0f1724;--text:#f3f4f6;--muted:#9aa6b2;--glass-bg: rgba(255,255,255,0.03);--glass-border: rgba(255,255,255,0.06)}
 </style>
 </head>
@@ -179,8 +175,6 @@ textarea{resize:vertical;min-height:75px}
     <div class="categories" id="catsMobile" style="margin-top:8px"></div>
   </div>
 </div>
-
-<!-- checkout modal -->
 <div class="modal" id="checkoutModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
   <div class="sheet" role="document">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
@@ -219,13 +213,9 @@ textarea{resize:vertical;min-height:75px}
     </div>
   </div>
 </div>
-
-<!-- liquid overlay (behind the sheet, visible when modal open) -->
 <div class="modal-overlay-liquid" aria-hidden="true">
   <div class="liquid-shape" role="presentation"></div>
 </div>
-
-<!-- note modal small -->
 <div class="modal" id="noteModal" aria-hidden="true">
   <div class="sheet" style="width:520px;max-width:96%">
     <h3 id="noteTitle" style="font-size:18px">ملاحظة الصنف</h3>
@@ -238,9 +228,7 @@ textarea{resize:vertical;min-height:75px}
     </div>
   </div>
 </div>
-
 <script>
-/* DATA */
 const DATA={
   categories:['الأكثر مبيعاً','مشاوي','بيتزا','سندويشات','مشروبات','حلويات','سلطات','مقبلات','وجبات سريعة','وجبات عائلية'],
   dishes:[
@@ -266,8 +254,6 @@ const DATA={
     {id:20,name:'سلطة سيزر',cat:'سلطات',desc:'خس، جبن، كرونش، صوص سيزر',price:14000,tag:'كلاسيكي'}
   ]
 }
-
-/* state */
 let order=[]
 const catsEl=document.getElementById('cats')
 const catsMobileEl=document.getElementById('catsMobile')
@@ -287,8 +273,6 @@ const noteInput=document.getElementById('noteInput')
 const noteTitle=document.getElementById('noteTitle')
 const modalOverlayLiquid=document.querySelector('.modal-overlay-liquid')
 let noteTargetId=null
-
-/* render categories */
 DATA.categories.forEach((c,i)=>{
   const el=document.createElement('div')
   el.className='cat'+(i===0?' active':'')
@@ -299,8 +283,6 @@ DATA.categories.forEach((c,i)=>{
   el2.onclick=()=>{document.querySelectorAll('#catsMobile .cat').forEach(x=>x.classList.remove('active'));el2.classList.add('active');renderGrid(c);closeSidebar()}
   catsMobileEl.appendChild(el2)
 })
-
-/* render grid */
 function renderGrid(filter){
   grid.innerHTML=''
   const items=DATA.dishes.filter(d=>!filter||d.cat===filter)
@@ -324,8 +306,6 @@ function renderGrid(filter){
   })
 }
 renderGrid(DATA.categories[0])
-
-/* search */
 document.getElementById('search').addEventListener('input',e=>{
   const q=e.target.value.trim()
   if(!q) return renderGrid(document.querySelector('#cats .cat.active').innerText)
@@ -337,8 +317,6 @@ document.getElementById('search').addEventListener('input',e=>{
     grid.appendChild(card)
   })
 })
-
-/* modal view (simple confirm) */
 function openModal(id,e){
   if(e) e.stopPropagation()
   const dish=DATA.dishes.find(x=>x.id===id)
@@ -347,8 +325,6 @@ function openModal(id,e){
     addToOrder(id)
   }
 }
-
-/* order actions */
 function addToOrder(id,e){
   if(e) e.stopPropagation()
   const dish=DATA.dishes.find(x=>x.id===id)
@@ -378,8 +354,6 @@ function renderOrder(){
     })
     document.getElementById('total').innerText=total.toLocaleString()+' IQD'
   }
-
-  // checkout list
   checkoutList.innerHTML=''
   if(order.length===0){
     checkoutList.innerHTML=`<p style="color:var(--muted);font-size:13px">السلة فارغة - أضف أطباقاً من اليمين</p>`
@@ -421,14 +395,10 @@ function renderOrder(){
   if(cartCountSide) cartCountSide.innerText = count
   saveOrderToStorage()
 }
-
-/* qty helpers */
 function increaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty++; renderOrder() } }
 function decreaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty--; if(i.qty<=0){ order.splice(order.indexOf(i),1) } renderOrder() } }
 function setQty(id,val){ if(val<1) val=1; const i=order.find(o=>o.id===id); if(i){ i.qty=val; renderOrder() } }
 function removeItem(id){ const i=order.find(o=>o.id===id); if(i){ order.splice(order.indexOf(i),1); renderOrder() } }
-
-/* note modal */
 function openNoteModal(id){
   noteTargetId=id
   const it=order.find(o=>o.id===id)
@@ -445,16 +415,13 @@ document.getElementById('saveNote').addEventListener('click',()=>{
   const it=order.find(o=>o.id===noteTargetId); if(it){ it.note=noteInput.value.trim(); renderOrder() }
   noteModal.classList.remove('open'); noteModal.setAttribute('aria-hidden','true'); noteTargetId=null
 })
-
-/* checkout modal open/close with mobile-friendly behavior */
 function openCheckoutModal(){
   renderOrder()
   checkoutModal.classList.add('open')
   checkoutModal.setAttribute('aria-hidden','false')
-  // also show liquid overlay for effect
   modalOverlayLiquid.style.display = 'block'
   setTimeout(()=>{ modalOverlayLiquid.classList.add('visible') },20)
-  document.body.style.overflow = 'hidden' // prevent body scroll while sheet open on mobile
+  document.body.style.overflow = 'hidden'
 }
 function closeCheckoutModal(){
   checkoutModal.classList.remove('open')
@@ -468,15 +435,11 @@ if(cartBtnSide) cartBtnSide.addEventListener('click', openCheckoutModal)
 openCheckoutFromSidebar.addEventListener('click', openCheckoutModal)
 closeCheckout.addEventListener('click', closeCheckoutModal)
 document.getElementById('cancelCheckout').addEventListener('click', closeCheckoutModal)
-
-/* sidebar small screen */
 const sidebarSlide=document.getElementById('sidebarSlide'),panel=document.getElementById('panel')
 document.getElementById('openSide').addEventListener('click',()=>{ panel.classList.add('open'); sidebarSlide.style.display='block' })
 document.getElementById('closeSide').addEventListener('click',closeSidebar)
 function closeSidebar(){ panel.classList.remove('open'); setTimeout(()=>{sidebarSlide.style.display='none'},300) }
 document.addEventListener('click',e=>{ if(e.target===sidebarSlide){ closeSidebar() } })
-
-/* demo mood */
 document.getElementById('demoMood').addEventListener('click',()=>{
   document.body.animate([{background:getComputedStyle(document.documentElement).getPropertyValue('--bg')},{background:'#faf5ff'},{background:getComputedStyle(document.documentElement).getPropertyValue('--bg')}],{duration:1200})
   const all=document.querySelectorAll('.card .thumb')
@@ -487,8 +450,6 @@ function saveOrderToStorage(){ try{ localStorage.setItem('bf_order', JSON.string
 function loadOrderFromStorage(){ try{ const d = JSON.parse(localStorage.getItem('bf_order')||'[]'); if(Array.isArray(d)) order=d; }catch(e){ order=[] } renderOrder() }
 window.addEventListener('beforeunload', saveOrderToStorage)
 loadOrderFromStorage()
-
-/* checkout form submit -> whatsapp */
 document.getElementById('checkoutForm').addEventListener('submit', e=>{
   e.preventDefault()
   const name=document.getElementById('custName').value.trim()
@@ -499,7 +460,6 @@ document.getElementById('checkoutForm').addEventListener('submit', e=>{
   if(!/^07\d{9}$/.test(phoneDigits) && !/^7\d{9}$/.test(phoneDigits) && !/^9647\d{9}$/.test(phoneDigits)){alert('يرجى إدخال رقم هاتف عراقي صحيح');return}
   if(address.split(/\s+/).length<2){alert('يرجى كتابة عنوان لا يقل عن كلمتين');return}
   if(order.length===0){ alert('السلة فارغة'); return }
-
   let msgLines='طلب جديد\n\n'
   msgLines+=`الاسم: ${name}\nالرقم: ${phone}\nالعنوان: ${address}\n\n`
   msgLines+='الطلبات:\n'
@@ -511,19 +471,14 @@ document.getElementById('checkoutForm').addEventListener('submit', e=>{
   const total=order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString()
   msgLines+=`\n\nالمجموع الكلي: ${total} IQD\n\nشكراً`
 
-  const waNumber='+9647855321655' // ضبط رقم المطعم
+  const waNumber='+9647855321655'
   const waUrl=`https://wa.me/${waNumber.replace('+','')}?text=${encodeURIComponent(msgLines)}`
   window.open(waUrl,'_blank')
 
   closeCheckoutModal()
 })
-
-/* close modals on Escape */
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeCheckoutModal(); noteModal.classList.remove('open'); noteModal.setAttribute('aria-hidden','true') } })
-
-/* accessibility: click outside modals to close */
 document.addEventListener('click', (e)=>{
-  // close checkout if clicked outside sheet on large screens
   if(checkoutModal.classList.contains('open') && e.target === checkoutModal){
     closeCheckoutModal()
   }
@@ -531,14 +486,7 @@ document.addEventListener('click', (e)=>{
     noteModal.classList.remove('open'); noteModal.setAttribute('aria-hidden','true')
   }
 })
-
-/* prevent clicks on buttons inside cards from bubbling (they already stopPropagation in handlers) */
-
-/* small enhancement: when modal open, show liquid overlay (class toggled) */
 const modalLiquid = document.querySelector('.modal-overlay-liquid')
-/* we show or hide by toggling display in openCheckoutModal/closeCheckoutModal */
-
-/* expose functions used inline by HTML (onclick attributes) */
 window.openModal = openModal
 window.addToOrder = addToOrder
 
