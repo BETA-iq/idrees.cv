@@ -37,7 +37,7 @@ html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-
 .order{margin-top:16px;padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.82));border:1px solid var(--glass-border)}
 .order h3{margin:0 0 10px 0}
 .items{max-height:320px;overflow:auto;padding-right:6px}
-.order-item{display:flex;justify-content:space-between;gap:8px;padding:10px 6px;border-bottom:1px dashed rgba(15,23,42,0.04);align-items:center}
+.order-item{display:flex;justify-content:space-between;gap:8px;padding:6px 4px;border-bottom:1px dashed rgba(15,23,42,0.04);align-items:center}
 .order-total{display:flex;justify-content:space-between;margin-top:12px;font-weight:800}
 .btn{display:inline-block;padding:10px 14px;border-radius:10px;text-decoration:none;border:none;cursor:pointer}
 .btn-primary{background:linear-gradient(90deg,var(--accent),var(--main));color:#fff;box-shadow:0 12px 30px rgba(107,33,168,0.12);font-weight:700}
@@ -59,11 +59,11 @@ html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-
 .modal.open{visibility:visible;opacity:1}
 .sheet{width:720px;max-width:96%;background:#fff;border-radius:12px;padding:18px;border:1px solid rgba(0,0,0,0.04);box-shadow:0 30px 60px rgba(16,24,40,0.08);transform:translateY(20px);transition:transform .22s;max-height:80vh;overflow:hidden}
 .modal.open .sheet{transform:translateY(0)}
-.form-row{display:flex;gap:8px;flex-wrap:wrap}
+.form-row{display:flex;gap:6px;flex-wrap:wrap}
 .form-group{display:flex;flex-direction:column;gap:6px;flex:1}
 .input,textarea{padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);outline:none}
 textarea{resize:vertical;min-height:75px}
-.footer-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.footer-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:6px}
 .bg-glow{position:fixed;left:50%;top:8%;width:520px;height:280px;border-radius:48%;transform:translateX(-50%);filter:blur(48px);opacity:0.12;background:radial-gradient(circle at 30% 30%,var(--accent),transparent 20%),radial-gradient(circle at 70% 70%,var(--main),transparent 30%);pointer-events:none;z-index:0}
 .sidebar-slide{position:fixed;inset:0;display:none;z-index:80}
 .sidebar-panel{position:fixed;right:0;top:0;height:100%;width:320px;background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,255,255,0.92));box-shadow: -20px 0 40px rgba(16,24,40,0.12);padding:18px;transform:translateX(100%);transition:transform .28s}
@@ -75,8 +75,6 @@ textarea{resize:vertical;min-height:75px}
 .remove-btn{background:transparent;border:1px solid rgba(220,38,38,0.08);padding:6px 8px;border-radius:8px;color:#b91c1c}
 .cart-toggle{padding:8px 10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);cursor:pointer;display:flex;align-items:center;gap:8px;background:transparent}
 .cart-badge{background:#ff4d6d;color:#fff;border-radius:50%;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;padding:0 6px;font-size:13px}
-
-/* liquid overlay when modal opens */
 .modal-overlay-liquid{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .28s}
 .modal.open + .modal-overlay-liquid{opacity:1}
 .liquid-shape{
@@ -85,15 +83,9 @@ textarea{resize:vertical;min-height:75px}
   transform:translateX(-50%);filter:blur(36px);opacity:0.12;
   background:radial-gradient(circle at 30% 30%,var(--accent),transparent 18%),radial-gradient(circle at 70% 70%,var(--main),transparent 30%);
 }
-
-/* smaller note textarea and smaller heading inside sheet */
 .sheet h3, .sheet h4 { margin: 0 0 8px 0; line-height:1.05; }
 .order-note-small{min-height:54px;max-height:90px;}
-
-/* checkout list scroll area */
-#checkoutList{max-height:320px;overflow:auto;padding-right:6px}
-
-/* mobile-specific adjustments */
+#checkoutList{max-height: 25vh;padding-right:6px}
 @media (max-width: 900px){
   .app{margin:12px auto;padding:8px;grid-template-columns:1fr}
   .header{display:flex;margin-bottom:12px}
@@ -104,27 +96,22 @@ textarea{resize:vertical;min-height:75px}
   .modal{align-items:flex-end;padding:8px}
   .modal.open .sheet{transform:translateY(0)}
   .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-  /* make checkoutList use more vertical space but scroll independently */
   #checkoutList{max-height:30vh}
-  /* reduce the note text area in the form */
-  textarea#orderNote{min-height:60px;max-height:100px}
-  /* reduce title sizes */
+  textarea#orderNote { min-height:40px; max-height:80px; }
   .sheet h3{font-size:18px}
-  /* the cart in header should open sheet full-screen like mobile */
   .cart-toggle{padding:7px 9px}
   .cart-badge{min-width:20px;height:20px;font-size:12px}
-  /* touch-friendly buttons */
   .btn, .btn-ghost, .btn-primary{padding:10px 12px}
 }
 
-/* very small screens: make the sheet show slight margin so background peeks */
 @media (max-width:480px){
   .sheet{width:calc(100vw - 14px);height:calc(100vh - 14px);padding:10px}
   #checkoutList{max-height:30vh}
   textarea#orderNote{min-height:52px}
 }
+#checkoutList p, .order-item strong, .order-item div { font-size:12px; }
 
-/* dark variation (kept available) */
+.sheet { width: 500px; max-width:90%; }
 .dark{--bg:#0f1724;--text:#f3f4f6;--muted:#9aa6b2;--glass-bg: rgba(255,255,255,0.03);--glass-border: rgba(255,255,255,0.06)}
 </style>
 </head>
