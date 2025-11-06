@@ -482,8 +482,7 @@ document.getElementById('checkoutForm').addEventListener('submit', e=>{
   msg += `--------------------------------%0A`
   order.forEach(o=>{ msg += `${o.name} x${o.qty} - ${(o.price*o.qty).toLocaleString()} IQD${o.note?` (ملاحظة: ${o.note})`:''}%0A` })
   msg += `--------------------------------%0Aالمجموع الكلي: ${order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString()} IQD`
-
-  const whatsappUrl = `https://wa.me/?send=${msg}`
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=9647855321655&text=${msg}`
   window.open(whatsappUrl,'_blank')
   order=[]
   renderOrder()
