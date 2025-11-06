@@ -352,7 +352,7 @@ document.getElementById('search').addEventListener('input',e=>{
   const res=DATA.dishes.filter(d=>(d.name + ' ' + d.desc).toLowerCase().includes(q.toLowerCase()))
   res.forEach(d=>{
     const card=document.createElement('article');card.className='card'
-    card.innerHTML=`<div class="price">${d.price.toLocaleString()} IQD</div><div class="thumb" data-id="${d.id}">${d.name.split(' ').slice(0,3).join(' ')}</div><h4>${d.name}</h4><p>${d.desc}</p><div class='card-actions'><small style='color:var(--muted)'>${d.tag}</small><div><button class='btn-ghost' data-action="view" data-id="${d.id}">عرض</button> <button class='btn-ghost' data-action="add" data-id="${d.id}">أضف</button></div></div><div class='ribbon'>${d.tag}</div>`
+    card.innerHTML=`<div class="price">${d.price.toLocaleString()} IQD</div><div class="thumb">${d.name.split(' ').slice(0,3).join(' ')}</div><h4>${d.name}</h4><p>${d.desc}</p><div class='card-actions'><small style='color:var(--muted)'>${d.tag}</small><div><button class='btn-ghost' onclick='openModal(${d.id}, event)'>عرض</button> <button class='btn-ghost' onclick='addToOrder(${d.id}, event)'>أضف</button></div></div><div class='ribbon'>${d.tag}</div>`
     grid.appendChild(card)
   })
 })
