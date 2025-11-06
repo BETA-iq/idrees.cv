@@ -468,26 +468,37 @@ function saveOrderToStorage(){ try{ localStorage.setItem('bf_order', JSON.string
 function loadOrderFromStorage(){ try{ const d = JSON.parse(localStorage.getItem('bf_order')||'[]'); if(Array.isArray(d)) order=d; }catch(e){ order=[] } renderOrder() }
 window.addEventListener('beforeunload', saveOrderToStorage)
 loadOrderFromStorage()
-document.getElementById('checkoutForm').addEventListener('submit', e=>{
-  e.preventDefault()
-  if(order.length===0){ alert('السلة فارغة!'); return }
-  const name = document.getElementById('custName').value.trim()
-  const phone = document.getElementById('custPhone').value.trim()
-  const address = document.getElementById('custAddress').value.trim()
-  const note = document.getElementById('orderNote').value.trim()
-  if(!name || !phone || !address){ alert('الرجاء تعبئة جميع الحقول المطلوبة'); return }
+document.getElementById('checkoutForm').addEventListener('submit', e => {
+  e.preventDefault();
 
-  let msg = `طلب جديد من ${name}%0Aرقم الهاتف: ${phone}%0Aالعنوان: ${address}%0A`
-  if(note) msg += `ملاحظة: ${note}%0A`
-  msg += `--------------------------------%0A`
-  order.forEach(o=>{ msg += `${o.name} x${o.qty} - ${(o.price*o.qty).toLocaleString()} IQD${o.note?` (ملاحظة: ${o.note})`:''}%0A` })
-  msg += `--------------------------------%0Aالمجموع الكلي: ${order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString()} IQD`
-  const whatsappUrl = `https://api.whatsapp.com/send?phone=9647855321655&text=${msg}`
-  window.open(whatsappUrl,'_blank')
-  order=[]
-  renderOrder()
-  closeCheckoutModal()
-})
+  if (order.length === 0) {
+    alert('السلة فارغة!');
+    return;
+  }
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const address = document.getElementById('custAddress').value.trim();
+  const note = document.getElementById('orderNote').value.trim();
+  if (!name || !phone || !address) {
+    alert('الرجاء تعبئة جميع الحقول المطلوبة');
+    return;
+  }
+  let msg = `طلب جديد من ${name}\nرقم الهاتف: ${phone}\nالعنوان: ${address}\n`;
+  if (note) msg += `ملاحظة: ${note}\n`;
+  msg += `--------------------------------\n`;
+  order.forEach(o => {
+    msg += `${o.name} x${o.qty} - ${(o.price * o.qty).toLocaleString()} IQD`;
+    if (o.note) msg += ` (ملاحظة: ${o.note})`;
+    msg += `\n`;
+  });
+  msg += `--------------------------------\nالمجموع الكلي: ${order.reduce((s, o) => s + o.price * o.qty, 0).toLocaleString()} IQD`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=9647855321655&text=${encodeURIComponent(msg)}`;
+  window.open(whatsappUrl, '_blank');
+  order = [];
+  renderOrder();
+  closeCheckoutModal();
+});
+
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeCheckoutModal(); noteModal.classList.remove('open'); noteModal.setAttribute('aria-hidden','true') } })
 document.addEventListener('click', (e)=>{
   if(checkoutModal.classList.contains('open') && e.target === checkoutModal){
