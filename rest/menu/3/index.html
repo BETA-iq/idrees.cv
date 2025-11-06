@@ -77,7 +77,12 @@ html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;background:linear-
 .form-row{display:flex;gap:8px;flex-wrap:wrap}
 .form-group{display:flex;flex-direction:column;gap:6px;flex:1}
 .input,textarea{padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);outline:none}
-textarea{resize:vertical;min-height:75px}
+textarea {
+  width: 100%;
+  max-width: 80%;
+  resize: vertical;
+  min-height: 75px;
+}
 .footer-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 .bg-glow{position:fixed;left:50%;top:8%;width:520px;height:280px;border-radius:48%;transform:translateX(-50%);filter:blur(48px);opacity:0.12;background:radial-gradient(circle at 30% 30%,var(--accent),transparent 20%),radial-gradient(circle at 70% 70%,var(--main),transparent 30%);pointer-events:none;z-index:0}
 .sidebar-slide{position:fixed;inset:0;display:none;z-index:80}
