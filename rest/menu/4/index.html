@@ -331,7 +331,7 @@ function renderGrid(filter){
     card.setAttribute('data-id',d.id)
     card.innerHTML=`
       <div class="price">${d.price.toLocaleString()} IQD</div>
-      <div class="thumb">${d.name.split(' ').slice(0,3).join(' ')}</div>
+      <div class="thumb" data-id="${d.id}">${d.name.split(' ').slice(0,3).join(' ')}</div>
       <h4>${d.name}</h4>
       <p>${d.desc}</p>
       <div class='card-actions'><small style='color:var(--muted)'>${d.tag}</small>
