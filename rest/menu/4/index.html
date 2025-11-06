@@ -395,16 +395,20 @@ document.getElementById('search').addEventListener('input',e=>{
 grid.addEventListener('click', (e)=>{
   const btn = e.target.closest('button')
   if(!btn) return
-  const action = btn.getAttribute('data-action')
-  const id = parseInt(btn.getAttribute('data-id'))
-  if(action === 'view') openModal(id, e)
-  if(action === 'add') {
-    // find thumb element to animate from
-    const thumb = document.querySelector(`.thumb[data-id="${id}"]`)
+  const action = btn.dataset.action
+  const id = parseInt(btn.dataset.id)
+  if(!id) return
+  const dish = DATA.dishes.find(d=>d.id === id)
+  if(!dish) return
+  if(action === 'view'){
+    openModal(id, e)
+  } else if(action === 'add'){
     addToOrder(id)
+    const thumb = btn.closest('.card').querySelector('.thumb')
     if(thumb) flyParticleFromElementToCart(thumb)
   }
 })
+
 
 /* ------- MODAL VIEW (عرض) ------- */
 function openModal(id,e){
@@ -452,7 +456,6 @@ function renderOrder(){
     })
     document.getElementById('total').innerText=total.toLocaleString()+' IQD'
   }
-  // checkout list
   checkoutList.innerHTML=''
   if(order.length===0){
     checkoutList.innerHTML=`<p style="color:var(--muted);font-size:13px">السلة فارغة - أضف أطباقاً من اليمين</p>`
