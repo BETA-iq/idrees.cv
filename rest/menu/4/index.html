@@ -368,8 +368,8 @@ function renderGrid(filter){
       <p>${d.desc}</p>
       <div class='card-actions'><small style='color:var(--muted)'>${d.tag}</small>
         <div>
-          <button class='btn btn-primary' data-action="view" data-id="${d.id}">عرض</button>
-          <button class='btn btn-primary' data-offer="add" data-action="add" data-id="${d.id}">أضف</button>
+          <button class='btn-ghost' onclick='openModal(${d.id}, event)'>عرض</button>
+          <button class='btn-ghost' onclick='addToOrder(${d.id}, event)'>أضف</button>
         </div>
       </div>
       <div class='ribbon' style='display:${d.tag?"block":"none"}'>${d.tag}</div>`
