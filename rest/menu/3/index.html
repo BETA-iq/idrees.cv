@@ -572,7 +572,6 @@ document.getElementById('checkoutForm').addEventListener('submit', e => {
   msg += '--------------------\n';
   msg += `المجموع الكلي: ${order.reduce((s, o) => s + o.price * o.qty, 0).toLocaleString()} IQD\n`;
   msg += '====================';
-  const whatsappUrl = `https://wa.me/+9647855321655?text=${encodeURIComponent(msg)}`/*`https://api.whatsapp.com/send?phone=9647855321655&text=${encodeURIComponent(msg)}`*/;
   window.open(`https://api.whatsapp.com/send?phone=9647855321655&text=${encodeURIComponent(msg)}`, '_blank');
   order = [];
   renderOrder();
