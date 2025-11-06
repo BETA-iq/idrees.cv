@@ -178,17 +178,7 @@ textarea {
     <div class="toolbar">
       <div class="search"><input id="search" placeholder="ابحث عن طبق أو مكوّن..." autocomplete="off" /></div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-primary" id="demoMood">العروض</button>
-      </div>
-    </div>
-    <section class="grid" id="grid" aria-live="polite"></section>
-  </main>
-
-  <main class="main" role="main">
-    <div class="toolbar">
-      <div class="search"><input id="search" placeholder="ابحث عن طبق أو مكوّن..." autocomplete="off" /></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-primary" id="offersBtn">تجربة بنفش</button>
+        <button class="btn btn-primary" id="offersBtn">العروض</button>
       </div>
     </div>
     <section class="grid" id="grid" aria-live="polite"></section>
@@ -253,6 +243,15 @@ textarea {
       <button id="cancelNote" class="btn-ghost">إلغاء</button>
       <button id="saveNote" class="btn btn-primary">حفظ</button>
     </div>
+    <div class="modal" id="offersModal" aria-hidden="true">
+  <div class="sheet" style="width:640px;max-width:96%">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 style="font-size:18px">العروض الحالية</h3>
+      <button id="closeOffers" class="btn-ghost">إغلاق</button>
+    </div>
+    <p style="color:var(--muted);margin-top:8px">اختر عرضاً لإضافته مباشرةً إلى السلة</p>
+    <div class="offers-list" id="offersList">
+    </div>
   </div>
 </div>
 <script>
@@ -281,6 +280,11 @@ const DATA={
     {id:20,name:'سلطة سيزر',cat:'سلطات',desc:'خس، جبن، كرونش، صوص سيزر',price:14000,tag:'كلاسيكي'}
   ]
 }
+const OFFERS = [
+  {id: 101, title: "عرض عائلي: بيتزا + بطاطا + مشروب", price: 70000, items: ["بيتزا مارجريتا","بطاطا مقلية","عصير برتقال طبيعي"]},
+  {id: 102, title: "عرض الغداء: شاورما + عصير", price: 34000, items: ["شاورما دجاج","عصير ليمون بالنعناع"]},
+  {id: 103, title: "مجموعة المقبلات", price: 22000, items: ["حمص بالطحينة","بطاطا مقلية"]}
+]
 let order=[]
 const catsEl=document.getElementById('cats')
 const catsMobileEl=document.getElementById('catsMobile')
@@ -404,6 +408,10 @@ function renderOrder(){
       qtyControls.appendChild(minus); qtyControls.appendChild(input); qtyControls.appendChild(plus)
       left.appendChild(title); left.appendChild(noteText); left.appendChild(qtyControls)
       const offersBtn = document.getElementById('offersBtn')
+      const offersModal = document.getElementById('offersModal')
+      const offersList = document.getElementById('offersList')
+      const closeOffers = document.getElementById('closeOffers')
+
       const right=document.createElement('div'); right.style.textAlign='left'; right.style.minWidth='140px'
       const priceLine=document.createElement('div'); priceLine.innerText=(o.price*o.qty).toLocaleString()+' IQD'
       const actions=document.createElement('div'); actions.style.marginTop='8px'
