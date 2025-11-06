@@ -78,7 +78,6 @@ textarea { resize: vertical; min-height: 80px; }
 .modal-overlay-liquid{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .28s}
 .modal.open + .modal-overlay-liquid{opacity:1}
 .liquid-shape{position:absolute;left:50%;top:12%;width:560px;height:240px;border-radius:48%;transform:translateX(-50%);filter:blur(36px);opacity:0.12;background:radial-gradient(circle at 30% 30%,var(--accent),transparent 18%),radial-gradient(circle at 70% 70%,var(--main),transparent 30%);}
-
 .sheet h3, .sheet h4 { margin: 0 0 8px 0; line-height:1.05; }
 .order-note-small{min-height:54px;max-height:90px;}
 #checkoutList{max-height:320px;overflow:auto;padding-right:6px}
@@ -105,8 +104,6 @@ textarea { resize: vertical; min-height: 80px; }
   textarea#orderNote{min-height:52px}
 }
 .dark{--bg:#0f1724;--text:#f3f4f6;--muted:#9aa6b2;--glass-bg: rgba(255,255,255,0.03);--glass-border: rgba(255,255,255,0.06)}
-
-/* --- cart hit / active styles --- */
 .cart-hit {
   background: linear-gradient(90deg, var(--cart-red), #ff6b6b);
   color: #fff;
@@ -114,16 +111,12 @@ textarea { resize: vertical; min-height: 80px; }
   transform: scale(1.02);
 }
 .cart-hit .cart-badge { background: #fff; color: var(--cart-red); font-weight:900; box-shadow:none; }
-
-/* bounce animation when cart receives item */
 @keyframes cartBounce {
   0% { transform: translateY(0) scale(1); }
   30% { transform: translateY(-8px) scale(1.06); }
   60% { transform: translateY(0) scale(0.98); }
   100%{ transform: translateY(0) scale(1); }
 }
-
-/* particle style */
 .particle {
   position: fixed;
   width: 14px;
@@ -134,8 +127,6 @@ textarea { resize: vertical; min-height: 80px; }
   pointer-events: none;
   box-shadow: 0 6px 18px rgba(239,68,68,0.22);
 }
-
-/* offers modal small card */
 .offers-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .offer-card{border-radius:10px;padding:10px;border:1px solid rgba(15,23,42,0.04);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,255,255,0.95))}
 .offer-price{font-weight:800}
@@ -143,7 +134,6 @@ textarea { resize: vertical; min-height: 80px; }
 </head>
 <body>
 <div class="bg-glow" aria-hidden></div>
-
 <div class="header" aria-hidden>
   <div class="brand">
     <div class="logo">ب</div>
@@ -160,7 +150,6 @@ textarea { resize: vertical; min-height: 80px; }
     </button>
   </div>
 </div>
-
 <div class="app">
   <div class="sidebar" id="desktopSidebar">
     <div class="brand-compact">
@@ -186,7 +175,6 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
     </div>
   </div>
-
   <main class="main" role="main">
     <div class="toolbar">
       <div class="search"><input id="search" placeholder="ابحث عن طبق أو مكوّن..." autocomplete="off" /></div>
@@ -197,7 +185,6 @@ textarea { resize: vertical; min-height: 80px; }
     <section class="grid" id="grid" aria-live="polite"></section>
   </main>
 </div>
-
 <div class="sidebar-slide" id="sidebarSlide">
   <div class="sidebar-panel" id="panel">
     <div class="close-side"><button class="btn btn-ghost" id="closeSide">إغلاق ✕</button></div>
@@ -205,8 +192,6 @@ textarea { resize: vertical; min-height: 80px; }
     <div class="categories" id="catsMobile" style="margin-top:8px"></div>
   </div>
 </div>
-
-<!-- Checkout Modal -->
 <div class="modal" id="checkoutModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
   <div class="sheet" role="document">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
@@ -215,7 +200,6 @@ textarea { resize: vertical; min-height: 80px; }
         <button id="closeCheckout" class="btn-ghost" aria-label="إغلاق السلة">إغلاق</button>
       </div>
     </div>
-
     <div style="display:flex;gap:14px;flex-wrap:wrap">
       <div style="flex:1;min-width:240px">
         <div id="checkoutList" style="border-radius:3px;border:1px solid rgba(15,23,42,0.04);padding:8px;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,255,255,0.95))">
@@ -226,7 +210,6 @@ textarea { resize: vertical; min-height: 80px; }
           <strong id="checkoutTotal">0 IQD</strong>
         </div>
       </div>
-
       <div style="width:320px;min-width:240px">
         <form id="checkoutForm" class="checkout-form" autocomplete="off">
           <div class="form-row" style="flex-direction:column">
@@ -239,7 +222,6 @@ textarea { resize: vertical; min-height: 80px; }
             <button type="button" class="btn-ghost" id="cancelCheckout">إلغاء</button>
             <button type="submit" class="btn btn-primary">إرسال الطلب إلى واتساب</button>
           </div>
-
         </form>
       </div>
     </div>
@@ -248,8 +230,6 @@ textarea { resize: vertical; min-height: 80px; }
 <div class="modal-overlay-liquid" aria-hidden="true">
   <div class="liquid-shape" role="presentation"></div>
 </div>
-
-<!-- Note Modal -->
 <div class="modal" id="noteModal" aria-hidden="true">
   <div class="sheet" style="width:520px;max-width:96%">
     <h3 id="noteTitle" style="font-size:18px">ملاحظة الصنف</h3>
@@ -262,8 +242,6 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
   </div>
 </div>
-
-<!-- Offers Modal -->
 <div class="modal" id="offersModal" aria-hidden="true">
   <div class="sheet" style="width:640px;max-width:96%">
     <div style="display:flex;justify-content:space-between;align-items:center">
@@ -272,7 +250,6 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
     <p style="color:var(--muted);margin-top:8px">اختر عرضاً لإضافته مباشرةً إلى السلة</p>
     <div class="offers-list" id="offersList">
-      <!-- عروض تجريبية سيتم إضافتها بالـ JS -->
     </div>
   </div>
 </div>
@@ -282,7 +259,6 @@ textarea { resize: vertical; min-height: 80px; }
 </div>
 
 <script>
-/* -------- DATA -------- */
 const DATA={
   categories:['الأكثر مبيعاً','مشاوي','بيتزا','سندويشات','مشروبات','حلويات','سلطات','مقبلات','وجبات سريعة','وجبات عائلية'],
   dishes:[
@@ -308,18 +284,12 @@ const DATA={
     {id:20,name:'سلطة سيزر',cat:'سلطات',desc:'خس، جبن، كرونش، صوص سيزر',price:14000,tag:'كلاسيكي'}
   ]
 }
-
-/* --- عروض تجريبية --- */
 const OFFERS = [
   {id: 101, title: "عرض عائلي: بيتزا + بطاطا + مشروب", price: 70000, items: ["بيتزا مارجريتا","بطاطا مقلية","عصير برتقال طبيعي"]},
   {id: 102, title: "عرض الغداء: شاورما + عصير", price: 34000, items: ["شاورما دجاج","عصير ليمون بالنعناع"]},
   {id: 103, title: "مجموعة المقبلات", price: 22000, items: ["حمص بالطحينة","بطاطا مقلية"]}
 ]
-
-/* -------- STATE -------- */
 let order = []
-
-/* -------- ELEMENTS -------- */
 const catsEl=document.getElementById('cats')
 const catsMobileEl=document.getElementById('catsMobile')
 const grid=document.getElementById('grid')
@@ -341,8 +311,6 @@ const offersBtn = document.getElementById('offersBtn')
 const offersModal = document.getElementById('offersModal')
 const offersList = document.getElementById('offersList')
 const closeOffers = document.getElementById('closeOffers')
-
-/* -------- INIT CATEGORIES / GRID -------- */
 DATA.categories.forEach((c,i)=>{
   const el=document.createElement('div')
   el.className='cat'+(i===0?' active':'')
@@ -377,8 +345,6 @@ function renderGrid(filter){
   })
 }
 renderGrid(DATA.categories[0])
-
-/* ------- SEARCH ------- */
 document.getElementById('search').addEventListener('input',e=>{
   const q=e.target.value.trim()
   if(!q) return renderGrid(document.querySelector('#cats .cat.active').innerText)
@@ -390,8 +356,6 @@ document.getElementById('search').addEventListener('input',e=>{
     grid.appendChild(card)
   })
 })
-
-/* ------- DELEGATE GRID CLICKS (عرض / أضف) ------- */
 grid.addEventListener('click', (e)=>{
   const btn = e.target.closest('button')
   if(!btn) return
@@ -408,9 +372,6 @@ grid.addEventListener('click', (e)=>{
     if(thumb) flyParticleFromElementToCart(thumb)
   }
 })
-
-
-/* ------- MODAL VIEW (عرض) ------- */
 function openModal(id,e){
   if(e) e.stopPropagation()
   const dish=DATA.dishes.find(x=>x.id===id)
@@ -421,8 +382,6 @@ function openModal(id,e){
     if(thumb) flyParticleFromElementToCart(thumb)
   }
 }
-
-/* ------- ORDER MANAGEMENT ------- */
 function addToOrder(id){
   const dish=DATA.dishes.find(x=>x.id===id)
   if(!dish) return
@@ -432,12 +391,9 @@ function addToOrder(id){
   animateCartReceive()
 }
 function animateCartReceive(){
-  // mark cart as active (red) while order has items
   updateCartAppearance()
-  // small bounce
   cartBtn.style.animation = 'cartBounce 380ms ease'
   if(cartBtnSide) cartBtnSide.style.animation = 'cartBounce 380ms ease'
-  // remove animation after done
   setTimeout(()=>{ cartBtn.style.animation = ''; if(cartBtnSide) cartBtnSide.style.animation = '' }, 500)
 }
 function renderOrder(){
@@ -491,20 +447,16 @@ function renderOrder(){
     })
     checkoutTotalEl.innerText=total.toLocaleString()+' IQD'
   }
-
   const count = order.reduce((s,o)=>s+o.qty,0)
   cartCount.innerText = count
   if(cartCountSide) cartCountSide.innerText = count
   saveOrderToStorage()
   updateCartAppearance()
 }
-
 function increaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty++; renderOrder() } }
 function decreaseQty(id){ const i=order.find(o=>o.id===id); if(i){ i.qty--; if(i.qty<=0){ order.splice(order.indexOf(i),1) } renderOrder() } }
 function setQty(id,val){ if(val<1) val=1; const i=order.find(o=>o.id===id); if(i){ i.qty=val; renderOrder() } }
 function removeItem(id){ const i=order.find(o=>o.id===id); if(i){ order.splice(order.indexOf(i),1); renderOrder() } }
-
-/* ------- NOTES ------- */
 let noteTargetId=null
 function openNoteModal(id){
   noteTargetId=id
@@ -522,8 +474,6 @@ document.getElementById('saveNote').addEventListener('click',()=>{
   const it=order.find(o=>o.id===noteTargetId); if(it){ it.note=noteInput.value.trim(); renderOrder() }
   noteModal.classList.remove('open'); noteModal.setAttribute('aria-hidden','true'); noteTargetId=null
 })
-
-/* ------- CHECKOUT MODAL ------- */
 function openCheckoutModal(){
   renderOrder()
   checkoutModal.classList.add('open')
@@ -544,18 +494,13 @@ if(cartBtnSide) cartBtnSide.addEventListener('click', openCheckoutModal)
 openCheckoutFromSidebar.addEventListener('click', openCheckoutModal)
 closeCheckout.addEventListener('click', closeCheckoutModal)
 document.getElementById('cancelCheckout').addEventListener('click', closeCheckoutModal)
-
-/* ------- SIDEBAR ------- */
 const sidebarSlide=document.getElementById('sidebarSlide'),panel=document.getElementById('panel')
 document.getElementById('openSide').addEventListener('click',()=>{ panel.classList.add('open'); sidebarSlide.style.display='block' })
 document.getElementById('closeSide').addEventListener('click',closeSidebar)
 function closeSidebar(){ panel.classList.remove('open'); setTimeout(()=>{sidebarSlide.style.display='none'},300) }
 document.addEventListener('click',e=>{ if(e.target===sidebarSlide){ closeSidebar() } })
-
-/* ------- DEMO / OFFERS ------- */
 offersBtn.addEventListener('click', ()=>{ openOffers() })
 closeOffers.addEventListener('click', ()=>{ closeOffersModal() })
-
 function openOffers(){
   offersList.innerHTML = ''
   OFFERS.forEach(of=>{
@@ -573,11 +518,9 @@ function openOffers(){
     </div>`
     offersList.appendChild(el)
   })
-
   offersModal.classList.add('open')
   offersModal.setAttribute('aria-hidden','false')
   document.body.style.overflow = 'hidden'
-  // delegate clicks inside offersList
   offersList.onclick = (e) => {
     const b = e.target.closest('button')
     if(!b) return
@@ -588,11 +531,9 @@ function openOffers(){
     if(act === 'view') {
       alert(`${of.title}\n\n${of.items.join(', ')}\n\nالسعر: ${of.price.toLocaleString()} IQD`)
     } else if(act === 'add') {
-      // Add offer as single item (id negative to avoid conflict)
       order.push({id: of.id, name: of.title, price: of.price, qty:1, note: ''})
       renderOrder()
       animateCartReceive()
-      // Visual particle from offers button
       flyParticleFromRect(offersBtn.getBoundingClientRect())
     }
   }
@@ -602,14 +543,10 @@ function closeOffersModal(){
   offersModal.setAttribute('aria-hidden','true')
   document.body.style.overflow = ''
 }
-
-/* ------- STORAGE ------- */
 function saveOrderToStorage(){ try{ localStorage.setItem('bf_order', JSON.stringify(order)) }catch(e){} }
 function loadOrderFromStorage(){ try{ const d = JSON.parse(localStorage.getItem('bf_order')||'[]'); if(Array.isArray(d)) order=d; }catch(e){ order=[] } renderOrder() }
 window.addEventListener('beforeunload', saveOrderToStorage)
 loadOrderFromStorage()
-
-/* ------- FORM SUBMIT (واتساب) ------- */
 document.getElementById('checkoutForm').addEventListener('submit', e=>{
   e.preventDefault()
   if(order.length===0){ alert('السلة فارغة!'); return }
@@ -624,15 +561,12 @@ document.getElementById('checkoutForm').addEventListener('submit', e=>{
   msg += `--------------------------------%0A`
   order.forEach(o=>{ msg += `${o.name} x${o.qty} - ${(o.price*o.qty).toLocaleString()} IQD${o.note?` (ملاحظة: ${o.note})`:''}%0A` })
   msg += `--------------------------------%0Aالمجموع الكلي: ${order.reduce((s,o)=>s+o.price*o.qty,0).toLocaleString()} IQD`
-
-  const whatsappUrl = `https://wa.me/?text=${msg}`
+  const whatsappUrl = `https://wa.me/?send=${msg}`
   window.open(whatsappUrl,'_blank')
   order=[]
   renderOrder()
   closeCheckoutModal()
 })
-
-/* ------- KEYBOARD & CLICK TO CLOSE ------- */
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeCheckoutModal(); noteModal.classList.remove('open'); noteModal.setAttribute('aria-hidden','true'); closeOffersModal() } })
 document.addEventListener('click', (e)=>{
   if(checkoutModal.classList.contains('open') && e.target === checkoutModal){
@@ -645,8 +579,6 @@ document.addEventListener('click', (e)=>{
     closeOffersModal()
   }
 })
-
-/* ------- CART VISUALS ------- */
 function updateCartAppearance(){
   const count = order.reduce((s,o)=>s+o.qty,0)
   if(count>0){
@@ -657,42 +589,25 @@ function updateCartAppearance(){
     if(cartBtnSide) cartBtnSide.classList.remove('cart-hit')
   }
 }
-
-/* ------- PARTICLE / FLY ANIMATION ------- */
-
-/**
- * Create a particle at element center and animate to cart button
- * elem: DOM element (source)
- */
 function flyParticleFromElementToCart(elem){
   const startRect = elem.getBoundingClientRect()
   return flyParticleFromRect(startRect)
 }
-
-/**
- * Animate a particle from a DOMRect to cart button
- */
 function flyParticleFromRect(startRect){
   const cartRect = cartBtn.getBoundingClientRect()
   const particle = document.createElement('div')
   particle.className = 'particle'
-  // start center
   const startX = startRect.left + startRect.width/2
   const startY = startRect.top + startRect.height/2
   particle.style.left = (startX - 7) + 'px'
   particle.style.top = (startY - 7) + 'px'
   document.body.appendChild(particle)
-
-  // end center (somewhere on the cart badge)
   const endX = cartRect.left + cartRect.width/2
   const endY = cartRect.top + cartRect.height/2
-
-  // use Web Animations API for smooth path (translate)
   const dx = endX - startX
   const dy = endY - startY
   const midX = startX + dx * 0.45
-  const midY = startY - 120 // lift up a bit for curve
-
+  const midY = startY - 120
   const keyframes = [
     { transform: `translate(0px, 0px) scale(1)`, offset: 0, opacity: 1 },
     { transform: `translate(${(midX - startX)}px, ${(midY - startY)}px) scale(1.05)`, offset: 0.45, opacity: 1 },
@@ -702,27 +617,18 @@ function flyParticleFromRect(startRect){
   const anim = particle.animate(keyframes, timing)
   anim.onfinish = ()=>{
     particle.remove()
-    // flash / small pulse on cart to indicate arrival
     cartBtn.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 260, easing: 'ease-out' })
-    // ensure cart appearance updated (it will be via renderOrder)
     updateCartAppearance()
   }
   return anim
 }
-
-/* ------- Particle when adding from offers button (no element) ------- */
 function flyParticleFromOffersBtn(){
   const btnRect = offersBtn.getBoundingClientRect()
   flyParticleFromRect(btnRect)
 }
-
-/* ------- expose for console (optional) ------- */
 window.openModal = openModal
 window.addToOrder = (id) => { addToOrder(id); const thumb = document.querySelector(`.thumb[data-id="${id}"]`); if(thumb) flyParticleFromElementToCart(thumb) }
-
-/* ------- ensure cart appearance on load ------- */
 updateCartAppearance()
-
 </script>
 </body>
 </html>
