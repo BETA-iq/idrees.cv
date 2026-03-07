@@ -1218,15 +1218,28 @@ document.getElementById("level").innerText="مستواج: "+level
 }
 
 
-function finishExam(){
+function finishExam() {
+  document.getElementById("exam").innerHTML = `
+    <h1>خلص الامتحان دكتورتنااا</h1>
+    <p class="result">صح: ${correct}</p>
+    <p class="result">غلط: ${wrong}</p>
+    <p class="result">مستواج: ${getLevel()}</p>
+  `;
 
-document.getElementById("exam").innerHTML=
-`<h1>خلص الامتحان دكتورتنااا</h1>
-<p class="result">صح: ${correct}</p>
-<p class="result">غلط: ${wrong}</p>`
+  updateProgress();
+}
 
-updateProgress()
+function getLevel() {
+  let total = correct + wrong;
+  if (total === 0) return "لا يوجد نتائج بعد";
 
+  let score = (correct / total) * 100;
+  if (score < 30) return "تعبانه ليششش؟؟؟";
+  else if (score < 50) return "ضعيفه شويه دكتورتنااا";
+  else if (score < 70) return "جيد جدا دكتورتناا";
+  else if (score < 85) return "عفييه زنوبتنا";
+  else if (score < 95) return "والله بطله منتاز";
+  else return "مفعله هكرررر";
 }
 
 
