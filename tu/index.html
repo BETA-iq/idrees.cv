@@ -1,8 +1,1247 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>thug - idrees</title>
-  <script>setTimeout(function() {window.location.href="https://discord.com/invite/tu";}, 1);</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>امتحاان زبونتناااا</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: "Segoe UI";
+}
+
+body{
+
+background: linear-gradient(135deg,#ffb6ff,#caa0ff,#ffb6d9);
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+
+}
+
+.glass{
+
+background:rgba(255,255,255,0.2);
+backdrop-filter: blur(15px);
+border-radius:20px;
+padding:30px;
+box-shadow:0 10px 40px rgba(0,0,0,0.2);
+border:1px solid rgba(255,255,255,0.3);
+
+}
+
+.container{
+
+width:90%;
+max-width:600px;
+text-align:center;
+
+}
+
+h1{
+
+color:#fff;
+margin-bottom:20px;
+
+}
+
+button{
+
+background:linear-gradient(45deg,#ff6bd6,#9b6bff);
+border:none;
+padding:12px 20px;
+margin:10px;
+border-radius:12px;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+
+}
+
+button:hover{
+
+transform:scale(1.05);
+
+}
+
+select{
+
+padding:10px;
+border-radius:10px;
+border:none;
+margin:10px;
+
+}
+
+#question{
+
+font-size:20px;
+margin-bottom:20px;
+color:white;
+
+}
+
+.option{
+
+display:block;
+width:100%;
+margin:8px 0;
+
+}
+
+#progressBtn{
+
+position:fixed;
+bottom:20px;
+right:20px;
+
+}
+
+#progressPanel{
+
+position:fixed;
+bottom:80px;
+right:20px;
+width:250px;
+display:none;
+
+}
+
+.result{
+
+color:white;
+margin-top:15px;
+
+}
+
+.blur{
+
+position:fixed;
+width:100%;
+height:100%;
+backdrop-filter:blur(10px);
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+</style>
 </head>
-<body><p> <a href="https://discord.com/invite/tu"></a>.</p></body></html>
+<body>
+<div class="blur" id="startScreen">
+<div class="glass container">
+<h1>منورررره زنوبتنااا، مستعده للامتحان؟؟</h1>
+<button onclick="start()">نعم</button>
+</div>
+
+</div>
+<div class="glass container" id="setup" style="display:none">
+<h1>كم سؤال تريدين يا دكتورة زينب؟</h1>
+<select id="countSelect">
+<option value="all">كلهن 74 سؤال</option>
+<option value="20">20</option>
+<option value="40">40</option>
+<option value="60">60</option>
+</select>
+
+<br>
+
+<button onclick="beginExam()">ابدأ الامتحان</button>
+
+</div>
+<div class="glass container" id="exam" style="display:none">
+<div id="question"></div>
+<div id="options"></div>
+</div>
+<button id="progressBtn" onclick="toggleProgress()">دوسي هنا</button>
+
+<div class="glass" id="progressPanel">
+
+<h3>تقدمجج دكتورتناا</h3>
+
+<p id="correct"></p>
+<p id="wrong"></p>
+<p id="level"></p>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+"question": "What is Biology? - ما هو علم الأحياء؟",
+"options": [
+"The science that studies living organisms - العلم الذي يدرس الكائنات الحية",
+"The science that studies rocks - العلم الذي يدرس الصخور",
+"The science that studies planets - العلم الذي يدرس الكواكب",
+"The science that studies machines - العلم الذي يدرس الآلات"
+],
+"answer": "The science that studies living organisms - العلم الذي يدرس الكائنات الحية"
+},
+
+{
+"question": "Which of the following is studied in Biology? - أي مما يلي يتم دراسته في علم الأحياء؟",
+"options": [
+"Humans, animals, and plants - الإنسان والحيوانات والنباتات",
+"Only rocks and soil - الصخور والتربة فقط",
+"Only machines - الآلات فقط",
+"Only stars - النجوم فقط"
+],
+"answer": "Humans, animals, and plants - الإنسان والحيوانات والنباتات"
+},
+
+{
+"question": "Which of the following are microorganisms? - أي من التالي يعد من الكائنات الحية الدقيقة؟",
+"options": [
+"Viruses, bacteria, fungi, parasites - الفيروسات والبكتيريا والفطريات والطفيليات",
+"Lions and tigers - الأسود والنمور",
+"Birds and fish - الطيور والأسماك",
+"Trees only - الأشجار فقط"
+],
+"answer": "Viruses, bacteria, fungi, parasites - الفيروسات والبكتيريا والفطريات والطفيليات"
+},
+
+{
+"question": "What does Biology study in living organisms? - ماذا يدرس علم الأحياء في الكائنات الحية؟",
+"options": [
+"Structure, function, growth, and development - التركيب والوظيفة والنمو والتطور",
+"Only color - اللون فقط",
+"Only weight - الوزن فقط",
+"Only sound - الصوت فقط"
+],
+"answer": "Structure, function, growth, and development - التركيب والوظيفة والنمو والتطور"
+},
+
+{
+"question": "What is the cell? - ما هي الخلية؟",
+"options": [
+"The functional and structural unit of a living organism - الوحدة الوظيفية والتركيبية للكائن الحي",
+"The smallest planet - أصغر كوكب",
+"A type of bacteria - نوع من البكتيريا",
+"A chemical reaction - تفاعل كيميائي"
+],
+"answer": "The functional and structural unit of a living organism - الوحدة الوظيفية والتركيبية للكائن الحي"
+},
+
+{
+"question": "What surrounds every cell? - ماذا يحيط بكل خلية؟",
+"options": [
+"Cell membrane - غشاء الخلية",
+"Nucleus wall - جدار النواة",
+"Bone layer - طبقة عظمية",
+"Protein shell - غلاف بروتيني"
+],
+"answer": "Cell membrane - غشاء الخلية"
+},
+
+{
+"question": "Which organelle stores DNA and controls cell activities? - أي عضيّة تخزن الـDNA وتتحكم في أنشطة الخلية؟",
+"options": [
+"Nucleus - النواة",
+"Mitochondria - الميتوكوندريا",
+"Ribosomes - الريبوسومات",
+"Lysosomes - الليسوسومات"
+],
+"answer": "Nucleus - النواة"
+},
+
+{
+"question": "What is the powerhouse of the cell? - ما هو بيت الطاقة في الخلية؟",
+"options": [
+"Mitochondria - الميتوكوندريا",
+"Nucleus - النواة",
+"Golgi apparatus - جهاز جولجي",
+"Lysosome - الليسوسوم"
+],
+"answer": "Mitochondria - الميتوكوندريا"
+},
+
+{
+"question": "What does the mitochondria generate? - ماذا تولد الميتوكوندريا؟",
+"options": [
+"ATP energy - طاقة ATP",
+"DNA molecules - جزيئات DNA",
+"Water molecules - جزيئات الماء",
+"Proteins only - البروتينات فقط"
+],
+"answer": "ATP energy - طاقة ATP"
+},
+
+{
+"question": "What is the function of Endoplasmic Reticulum (ER)? - ما وظيفة الشبكة الإندوبلازمية؟",
+"options": [
+"Protein and lipid synthesis and transport - تصنيع ونقل البروتينات والدهون",
+"Destroy bacteria - تدمير البكتيريا",
+"Store water - تخزين الماء",
+"Produce oxygen - إنتاج الأكسجين"
+],
+"answer": "Protein and lipid synthesis and transport - تصنيع ونقل البروتينات والدهون"
+},
+
+{
+"question": "What is the function of Golgi Apparatus? - ما وظيفة جهاز جولجي؟",
+"options": [
+"Modifies, sorts, and packages proteins and lipids - تعديل وفرز وتغليف البروتينات والدهون",
+"Produces ATP - إنتاج ATP",
+"Stores DNA - تخزين DNA",
+"Produces glucose - إنتاج الجلوكوز"
+],
+"answer": "Modifies, sorts, and packages proteins and lipids - تعديل وفرز وتغليف البروتينات والدهون"
+},
+
+{
+"question": "What is the function of ribosomes? - ما وظيفة الريبوسومات؟",
+"options": [
+"Synthesize proteins - تصنيع البروتينات",
+"Store water - تخزين الماء",
+"Destroy bacteria - تدمير البكتيريا",
+"Produce oxygen - إنتاج الأكسجين"
+],
+"answer": "Synthesize proteins - تصنيع البروتينات"
+},
+
+{
+"question": "What do lysosomes contain? - ماذا تحتوي الليسوسومات؟",
+"options": [
+"Digestive enzymes - إنزيمات هاضمة",
+"DNA molecules - جزيئات DNA",
+"Oxygen gas - غاز الأكسجين",
+"Fat molecules - جزيئات الدهون"
+],
+"answer": "Digestive enzymes - إنزيمات هاضمة"
+},
+
+{
+"question": "What is the function of vacuoles? - ما وظيفة الفجوات؟",
+"options": [
+"Storage sacs - أكياس تخزين",
+"Produce energy - إنتاج الطاقة",
+"Synthesize protein - تصنيع البروتين",
+"Destroy bacteria - تدمير البكتيريا"
+],
+"answer": "Storage sacs - أكياس تخزين"
+},
+
+{
+"question": "Where does photosynthesis occur in plant cells? - أين يحدث البناء الضوئي في الخلايا النباتية؟",
+"options": [
+"Chloroplasts - البلاستيدات الخضراء",
+"Mitochondria - الميتوكوندريا",
+"Nucleus - النواة",
+"Lysosomes - الليسوسومات"
+],
+"answer": "Chloroplasts - البلاستيدات الخضراء"
+},
+
+{
+"question": "What provides internal structure and movement support in the cell? - ما الذي يوفر البنية الداخلية ويساعد في حركة الخلية؟",
+"options": [
+"Cytoskeleton - الهيكل الخلوي",
+"Nucleus - النواة",
+"Ribosomes - الريبوسومات",
+"Golgi apparatus - جهاز جولجي"
+],
+"answer": "Cytoskeleton - الهيكل الخلوي"
+},
+
+{
+"question": "What are organisms that can only be seen with a microscope called? - ماذا تسمى الكائنات التي لا يمكن رؤيتها إلا بالمجهر؟",
+"options": [
+"Microorganisms - الكائنات الحية الدقيقة",
+"Mammals - الثدييات",
+"Plants - النباتات",
+"Insects - الحشرات"
+],
+"answer": "Microorganisms - الكائنات الحية الدقيقة"
+},
+
+{
+"question": "What is the main component of the cell membrane? - ما هو المكون الرئيسي لغشاء الخلية؟",
+"options": [
+"Phospholipid layer - طبقة الفوسفوليبيد",
+"Protein wall - جدار بروتيني",
+"Bone layer - طبقة عظمية",
+"Carbohydrate shell - غلاف كربوهيدراتي"
+],
+"answer": "Phospholipid layer - طبقة الفوسفوليبيد"
+},
+
+{
+"question": "What type of membrane is the cell membrane? - ما نوع غشاء الخلية؟",
+"options": [
+"Semi-permeable membrane - غشاء شبه منفذ",
+"Fully closed membrane - غشاء مغلق بالكامل",
+"Solid membrane - غشاء صلب",
+"Metal membrane - غشاء معدني"
+],
+"answer": "Semi-permeable membrane - غشاء شبه منفذ"
+},
+
+{
+"question": "Which endocytosis process is used by white blood cells to engulf bacteria? - أي عملية إدخال خلوي تستخدمها خلايا الدم البيضاء لابتلاع البكتيريا؟",
+"options": [
+"Phagocytosis - البلعمة",
+"Pinocytosis - الشرب الخلوي",
+"Exocytosis - الإخراج الخلوي",
+"Diffusion - الانتشار"
+],
+"answer": "Phagocytosis - البلعمة"
+},
+
+{
+"question": "Which process allows the cell to take in fluids through small vesicles? - أي عملية تسمح للخلية بإدخال السوائل عبر حويصلات صغيرة؟",
+"options": [
+"Pinocytosis - الشرب الخلوي",
+"Phagocytosis - البلعمة",
+"Respiration - التنفس",
+"Photosynthesis - البناء الضوئي"
+],
+"answer": "Pinocytosis - الشرب الخلوي"
+},
+
+{
+"question": "What process involves receptors and clathrin to form vesicles? - ما العملية التي تتضمن مستقبلات وكلاثرين لتكوين حويصلات؟",
+"options": [
+"Receptor-mediated endocytosis - الإدخال الخلوي بوساطة المستقبلات",
+"Pinocytosis - الشرب الخلوي",
+"Phagocytosis - البلعمة",
+"Diffusion - الانتشار"
+],
+"answer": "Receptor-mediated endocytosis - الإدخال الخلوي بوساطة المستقبلات"
+},
+{
+"question": "Some living organisms can be seen with what? - بعض الكائنات الحية يمكن رؤيتها بماذا؟",
+
+"options":[
+"The naked eye - العين المجردة",
+"A microscope only - المجهر فقط",
+"A telescope - التلسكوب",
+"Special glasses - نظارات خاصة"
+],
+
+"answer":"The naked eye - العين المجردة"
+},
+
+{
+"question": "Which device is used to see microorganisms? - أي جهاز يستخدم لرؤية الكائنات الحية الدقيقة؟",
+
+"options":[
+"Microscope - المجهر",
+"Telescope - التلسكوب",
+"Camera - الكاميرا",
+"Thermometer - ميزان الحرارة"
+],
+
+"answer":"Microscope - المجهر"
+},
+
+{
+"question": "How many sections does the phospholipid layer have? - كم عدد أقسام طبقة الفوسفوليبيد؟",
+
+"options":[
+"Three sections - ثلاثة أقسام",
+"Two sections - قسمان",
+"Four sections - أربعة أقسام",
+"Five sections - خمسة أقسام"
+],
+
+"answer":"Three sections - ثلاثة أقسام"
+},
+
+{
+"question": "What does the head section of the phospholipid layer contain? - ماذا يحتوي الجزء الرأسي من طبقة الفوسفوليبيد؟",
+
+"options":[
+"Phosphate layer - طبقة الفوسفات",
+"Fatty acids - أحماض دهنية",
+"Protein layer - طبقة بروتينية",
+"DNA molecules - جزيئات DNA"
+],
+
+"answer":"Phosphate layer - طبقة الفوسفات"
+},
+
+{
+"question": "What does the tail section consist of? - مم يتكون جزء الذيل؟",
+
+"options":[
+"Fatty acids - الأحماض الدهنية",
+"Proteins - البروتينات",
+"Carbohydrates - الكربوهيدرات",
+"DNA - الحمض النووي"
+],
+
+"answer":"Fatty acids - الأحماض الدهنية"
+},
+
+{
+"question": "What does hydrophilic mean? - ماذا يعني محب للماء؟",
+
+"options":[
+"Water loving - محب للماء",
+"Water repelling - طارد للماء",
+"Fat loving - محب للدهون",
+"Protein loving - محب للبروتين"
+],
+
+"answer":"Water loving - محب للماء"
+},
+
+{
+"question": "What does hydrophobic mean? - ماذا يعني طارد للماء؟",
+
+"options":[
+"Water repelling - طارد للماء",
+"Water loving - محب للماء",
+"Fat destroying - محطم للدهون",
+"Protein building - بناء البروتين"
+],
+
+"answer":"Water repelling - طارد للماء"
+},
+
+{
+"question": "What does lipophilic mean? - ماذا يعني محب للدهون؟",
+
+"options":[
+"Fat loving - محب للدهون",
+"Water loving - محب للماء",
+"Protein loving - محب للبروتين",
+"Salt loving - محب للأملاح"
+],
+
+"answer":"Fat loving - محب للدهون"
+},
+
+{
+"question": "Why do some substances require proteins to pass the cell membrane? - لماذا تحتاج بعض المواد إلى بروتينات للمرور عبر الغشاء الخلوي؟",
+
+"options":[
+"Because they cannot pass easily through the membrane - لأنها لا تستطيع المرور بسهولة عبر الغشاء",
+"Because they are too small - لأنها صغيرة جداً",
+"Because they are invisible - لأنها غير مرئية",
+"Because they are gases - لأنها غازات"
+],
+
+"answer":"Because they cannot pass easily through the membrane - لأنها لا تستطيع المرور بسهولة عبر الغشاء"
+},
+
+{
+"question": "What are the two processes used for transporting large compounds? - ما العمليتان المستخدمتان لنقل المركبات الكبيرة؟",
+
+"options":[
+"Endocytosis and Exocytosis - الإدخال الخلوي والإخراج الخلوي",
+"Respiration and photosynthesis - التنفس والبناء الضوئي",
+"Diffusion and osmosis - الانتشار والتناضح",
+"Digestion and absorption - الهضم والامتصاص"
+],
+
+"answer":"Endocytosis and Exocytosis - الإدخال الخلوي والإخراج الخلوي"
+},
+{
+"question": "What type of cells perform photosynthesis in plants? - أي نوع من الخلايا يقوم بعملية البناء الضوئي في النباتات؟",
+
+"options":[
+"Plant cells - الخلايا النباتية",
+"Animal cells - الخلايا الحيوانية",
+"Bacterial cells - الخلايا البكتيرية",
+"Blood cells - خلايا الدم"
+],
+
+"answer":"Plant cells - الخلايا النباتية"
+},
+
+{
+"question": "Where can ribosomes be found in the cell? - أين يمكن أن توجد الريبوسومات في الخلية؟",
+
+"options":[
+"Free in cytoplasm or attached to ER - حرة في السيتوبلازم أو مرتبطة بالشبكة الإندوبلازمية",
+"Only inside nucleus - فقط داخل النواة",
+"Only in mitochondria - فقط في الميتوكوندريا",
+"Only in lysosomes - فقط في الليسوسومات"
+],
+
+"answer":"Free in cytoplasm or attached to ER - حرة في السيتوبلازم أو مرتبطة بالشبكة الإندوبلازمية"
+},
+
+{
+"question": "What happens to foreign bodies during phagocytosis? - ماذا يحدث للأجسام الغريبة أثناء البلعمة؟",
+
+"options":[
+"They enter lysosome and are destroyed - تدخل إلى الليسوسوم ويتم تدميرها",
+"They become DNA - تتحول إلى DNA",
+"They produce energy - تنتج طاقة",
+"They leave the cell - تغادر الخلية"
+],
+
+"answer":"They enter lysosome and are destroyed - تدخل إلى الليسوسوم ويتم تدميرها"
+},
+
+{
+"question": "What forms during pinocytosis? - ماذا يتكون أثناء عملية الشرب الخلوي؟",
+
+"options":[
+"A small vesicle - حويصلة صغيرة",
+"A large nucleus - نواة كبيرة",
+"A protein chain - سلسلة بروتين",
+"A DNA molecule - جزيء DNA"
+],
+
+"answer":"A small vesicle - حويصلة صغيرة"
+},
+
+{
+"question": "What molecule helps form vesicles in receptor-mediated endocytosis? - ما الجزيء الذي يساعد في تكوين الحويصلات في الإدخال الخلوي بوساطة المستقبلات؟",
+
+"options":[
+"Clathrin - كلاثرين",
+"DNA - الحمض النووي",
+"Glucose - الجلوكوز",
+"Oxygen - الأكسجين"
+],
+
+"answer":"Clathrin - كلاثرين"
+},
+{
+"question": "What are red blood cells also called? - ماذا تسمى خلايا الدم الحمراء أيضاً؟",
+
+"options":[
+"Erythrocytes - الكريات الحمراء",
+"Leukocytes - الكريات البيضاء",
+"Platelets - الصفائح الدموية",
+"Neurons - الخلايا العصبية"
+],
+
+"answer":"Erythrocytes - الكريات الحمراء"
+},
+
+{
+"question": "What gives RBCs their red color? - ما الذي يعطي خلايا الدم الحمراء لونها الأحمر؟",
+
+"options":[
+"Hemoglobin - الهيموغلوبين",
+"Myoglobin - المايوغلوبين",
+"Melanin - الميلانين",
+"Keratin - الكيراتين"
+],
+
+"answer":"Hemoglobin - الهيموغلوبين"
+},
+
+{
+"question": "What is the main function of red blood cells? - ما الوظيفة الرئيسية لخلايا الدم الحمراء؟",
+
+"options":[
+"Transport of respiratory gases - نقل الغازات التنفسية",
+"Production of hormones - إنتاج الهرمونات",
+"Digestion of food - هضم الطعام",
+"Nerve transmission - نقل الإشارات العصبية"
+],
+
+"answer":"Transport of respiratory gases - نقل الغازات التنفسية"
+},
+
+{
+"question": "What is the shape of red blood cells? - ما شكل خلايا الدم الحمراء؟",
+
+"options":[
+"Biconcave disc - قرص ثنائي التقعر",
+"Spherical - كروي",
+"Cuboidal - مكعب",
+"Columnar - عمودي"
+],
+
+"answer":"Biconcave disc - قرص ثنائي التقعر"
+},
+
+{
+"question": "What is the normal RBC count in adult males? - ما العدد الطبيعي لخلايا الدم الحمراء عند الذكور البالغين؟",
+
+"options":[
+"5 million/cu mm - خمسة ملايين لكل ملم مكعب",
+"2 million/cu mm - مليوني لكل ملم مكعب",
+"10 million/cu mm - عشرة ملايين لكل ملم مكعب",
+"1 million/cu mm - مليون لكل ملم مكعب"
+],
+
+"answer":"5 million/cu mm - خمسة ملايين لكل ملم مكعب"
+},
+
+{
+"question": "What is the average lifespan of RBCs? - ما متوسط عمر خلايا الدم الحمراء؟",
+
+"options":[
+"120 days - 120 يوم",
+"30 days - 30 يوم",
+"60 days - 60 يوم",
+"365 days - 365 يوم"
+],
+
+"answer":"120 days - 120 يوم"
+},
+
+{
+"question": "Which organ is called the graveyard of RBCs? - أي عضو يسمى مقبرة خلايا الدم الحمراء؟",
+
+"options":[
+"Spleen - الطحال",
+"Heart - القلب",
+"Kidney - الكلية",
+"Lung - الرئة"
+],
+
+"answer":"Spleen - الطحال"
+},
+
+{
+"question": "Which cells phagocytize hemoglobin after RBC destruction? - أي خلايا تقوم بابتلاع الهيموغلوبين بعد تدمير خلايا الدم الحمراء؟",
+
+"options":[
+"Macrophages - البلعميات",
+"Neutrophils - العدلات",
+"Eosinophils - الحمضات",
+"Lymphocytes - الخلايا اللمفاوية"
+],
+
+"answer":"Macrophages - البلعميات"
+},
+
+{
+"question": "Hemoglobin is degraded into which substances? - إلى ماذا يتحلل الهيموغلوبين؟",
+
+"options":[
+"Iron, globin and porphyrin - الحديد والغلوبين والبورفيرين",
+"Calcium and sodium - الكالسيوم والصوديوم",
+"Glucose and glycogen - الغلوكوز والغلايكوجين",
+"Cholesterol and lipids - الكوليسترول والدهون"
+],
+
+"answer":"Iron, globin and porphyrin - الحديد والغلوبين والبورفيرين"
+},
+
+{
+"question": "What form transports most oxygen in blood? - بأي شكل يتم نقل معظم الأوكسجين في الدم؟",
+
+"options":[
+"Oxyhemoglobin - أوكسيهيموغلوبين",
+"Carbaminohemoglobin - كاربامينوهيموغلوبين",
+"Carbonic acid - حمض الكربونيك",
+"Plasma oxygen - أوكسجين البلازما"
+],
+
+"answer":"Oxyhemoglobin - أوكسيهيموغلوبين"
+},
+
+{
+"question": "What percentage of oxygen is transported as oxyhemoglobin? - ما نسبة الأوكسجين الذي ينقل على شكل أوكسيهيموغلوبين؟",
+
+"options":[
+"97% - 97 بالمئة",
+"50% - 50 بالمئة",
+"30% - 30 بالمئة",
+"10% - 10 بالمئة"
+],
+
+"answer":"97% - 97 بالمئة"
+},
+
+{
+"question": "What is the increase in RBC count called? - ماذا يسمى ازدياد عدد خلايا الدم الحمراء؟",
+
+"options":[
+"Polycythemia - كثرة الحمر",
+"Anemia - فقر الدم",
+"Leukemia - اللوكيميا",
+"Thrombosis - الخثار"
+],
+
+"answer":"Polycythemia - كثرة الحمر"
+},
+{
+"question": "Which of the following is an advantage of the biconcave shape of RBCs? - أي مما يلي يعتبر ميزة لشكل القرص ثنائي التقعر في خلايا الدم الحمراء؟",
+
+"options":[
+"Allows rapid diffusion of oxygen - يسمح بالانتشار السريع للأوكسجين",
+"Reduces hemoglobin content - يقلل محتوى الهيموغلوبين",
+"Prevents RBCs from entering capillaries - يمنع دخول الخلايا للشعيرات الدموية",
+"Increases cell nucleus size - يزيد حجم نواة الخلية"
+],
+
+"answer":"Allows rapid diffusion of oxygen - يسمح بالانتشار السريع للأوكسجين"
+},
+
+{
+"question": "Which mammal has nucleated RBCs? - أي الثدييات لها خلايا دم حمراء تحتوي على نواة؟",
+
+"options":[
+"Camel - الجمل",
+"Human - الإنسان",
+"Dog - الكلب",
+"Cow - البقرة"
+],
+
+"answer":"Camel - الجمل"
+},
+
+{
+"question": "What protein stores iron from destroyed RBCs? - أي بروتين يخزن الحديد الناتج عن تدمير خلايا الدم الحمراء؟",
+
+"options":[
+"Ferritin - الفيريتين",
+"Myoglobin - المايوجلوبين",
+"Hemoglobin - الهيموغلوبين",
+"Globin - الغلوبين"
+],
+
+"answer":"Ferritin - الفيريتين"
+},
+
+{
+"question": "What is bilirubin excreted by? - من خلال أي عضو يتم إفراز البيليروبين؟",
+
+"options":[
+"Liver - الكبد",
+"Spleen - الطحال",
+"Kidney - الكلية",
+"Lung - الرئة"
+],
+
+"answer":"Liver - الكبد"
+},
+
+{
+"question": "How much carbon dioxide is transported as carbhemoglobin? - كم نسبة ثاني أكسيد الكربون التي تُنقل على شكل كاربهموغلوبين؟",
+
+"options":[
+"30% - 30 بالمئة",
+"10% - 10 بالمئة",
+"50% - 50 بالمئة",
+"97% - 97 بالمئة"
+],
+
+"answer":"30% - 30 بالمئة"
+},
+
+{
+"question": "What role does hemoglobin play in blood buffering? - ما دور الهيموغلوبين في موازنة الدم؟",
+
+"options":[
+"Regulates hydrogen ion concentration - ينظم تركيز أيونات الهيدروجين",
+"Transports glucose - ينقل الغلوكوز",
+"Produces ATP - ينتج الطاقة",
+"Destroys pathogens - يدمر الممرضات"
+],
+
+"answer":"Regulates hydrogen ion concentration - ينظم تركيز أيونات الهيدروجين"
+},
+
+{
+"question": "Which antigens are carried by RBCs for blood group determination? - أي المستضدات تحملها خلايا الدم الحمراء لتحديد فصيلة الدم؟",
+
+"options":[
+"A, B, and Rh - A وB وRh",
+"O only - O فقط",
+"AB only - AB فقط",
+"None - لا شيء"
+],
+
+"answer":"A, B, and Rh - A وB وRh"
+},
+
+{
+"question": "What is the RBC count at birth? - كم عدد خلايا الدم الحمراء عند الولادة؟",
+
+"options":[
+"8–10 million/cu mm - 8–10 ملايين لكل ملم مكعب",
+"4–5 million/cu mm - 4–5 ملايين لكل ملم مكعب",
+"2–3 million/cu mm - 2–3 ملايين لكل ملم مكعب",
+"5–6 million/cu mm - 5–6 ملايين لكل ملم مكعب"
+],
+
+"answer":"8–10 million/cu mm - 8–10 ملايين لكل ملم مكعب"
+},
+
+{
+"question": "Why does RBC count decrease in newborns after 10 days? - لماذا ينخفض عدد خلايا الدم الحمراء عند حديثي الولادة بعد 10 أيام؟",
+
+"options":[
+"Destruction of RBCs causing physiological jaundice - تدمير خلايا الدم الحمراء مما يسبب اليرقان الطبيعي",
+"Increased production of RBCs - زيادة إنتاج خلايا الدم الحمراء",
+"Loss of plasma - فقدان البلازما",
+"Change in blood type - تغيير فصيلة الدم"
+],
+
+"answer":"Destruction of RBCs causing physiological jaundice - تدمير خلايا الدم الحمراء مما يسبب اليرقان الطبيعي"
+},
+{
+"question": "What is the nucleus? - ما هي النواة؟",
+
+"options":[
+"Membrane-enclosed organelle containing chromosomes - عضية محاطة بغشاء تحتوي على الكروموسومات",
+"Energy-producing organelle - عضية تنتج الطاقة",
+"Protein synthesis site - موقع تصنيع البروتين",
+"Digestive organelle - عضية هاضمة"
+],
+
+"answer":"Membrane-enclosed organelle containing chromosomes - عضية محاطة بغشاء تحتوي على الكروموسومات"
+},
+
+{
+"question": "What allows selective passage of molecules into and out of the nucleus? - ما الذي يسمح بمرور جزيئات محددة داخل وخارج النواة؟",
+
+"options":[
+"Nuclear pores - مسام النواة",
+"Cell membrane - غشاء الخلية",
+"Mitochondria - الميتوكوندريا",
+"Ribosomes - الريبوسومات"
+],
+
+"answer":"Nuclear pores - مسام النواة"
+},
+
+{
+"question": "What is DNA? - ما هو الحمض النووي DNA؟",
+
+"options":[
+"Organic chemical coding genetic information - مادة كيميائية عضوية تحمل المعلومات الوراثية",
+"Protein that stores energy - بروتين يخزن الطاقة",
+"Enzyme digesting sugars - إنزيم يهضم السكريات",
+"Lipid forming membranes - دهون تكوّن الأغشية"
+],
+
+"answer":"Organic chemical coding genetic information - مادة كيميائية عضوية تحمل المعلومات الوراثية"
+},
+
+{
+"question": "Which bases are purines in DNA? - أي القواعد هي البورينات في DNA؟",
+
+"options":[
+"Adenine and guanine - الأدينين والجوانين",
+"Cytosine and thymine - السيتوزين والثايمين",
+"Adenine and cytosine - الأدينين والسيتوزين",
+"Thymine and guanine - الثايمين والجوانين"
+],
+
+"answer":"Adenine and guanine - الأدينين والجوانين"
+},
+
+{
+"question": "Which bases are pyrimidines in DNA? - أي القواعد هي البيريميدينات في DNA؟",
+
+"options":[
+"Cytosine and thymine - السيتوزين والثايمين",
+"Adenine and guanine - الأدينين والجوانين",
+"Guanine and thymine - الجوانين والثايمين",
+"Adenine and cytosine - الأدينين والسيتوزين"
+],
+
+"answer":"Cytosine and thymine - السيتوزين والثايمين"
+},
+
+{
+"question": "How are DNA strands held together? - كيف تتماسك سلاسل DNA معاً؟",
+
+"options":[
+"Hydrogen bonds between bases - روابط هيدروجينية بين القواعد",
+"Covalent bonds between phosphates - روابط تساهمية بين الفوسفات",
+"Peptide bonds - روابط ببتيدية",
+"Ionic bonds - روابط أيونية"
+],
+
+"answer":"Hydrogen bonds between bases - روابط هيدروجينية بين القواعد"
+},
+
+{
+"question": "What is a gene? - ما هي الجين؟",
+
+"options":[
+"DNA segment coding for a specific protein - جزء من DNA يشفر بروتين محدد",
+"Energy molecule - جزيء طاقة",
+"Cell membrane component - مكون من غشاء الخلية",
+"RNA fragment - جزء من RNA"
+],
+
+"answer":"DNA segment coding for a specific protein - جزء من DNA يشفر بروتين محدد"
+},
+
+{
+"question": "What is semiconservative DNA replication? - ما هي الاستنساخ شبه المحافظ للـDNA؟",
+
+"options":[
+"Each new DNA molecule contains one original and one new strand - كل جزيء DNA جديد يحتوي على سلسلة أصلية وسلسلة جديدة",
+"DNA is copied entirely new - يتم نسخ DNA بالكامل من جديد",
+"DNA is not copied - لا يتم نسخ DNA",
+"Both strands are destroyed - يتم تدمير كلتا السلسلتين"
+],
+
+"answer":"Each new DNA molecule contains one original and one new strand - كل جزيء DNA جديد يحتوي على سلسلة أصلية وسلسلة جديدة"
+},
+
+{
+"question": "Where are chromosomes located in eukaryotic cells? - أين توجد الكروموسومات في الخلايا حقيقية النواة؟",
+
+"options":[
+"In the nucleus - في النواة",
+"In mitochondria only - في الميتوكوندريا فقط",
+"In cytoplasm only - في السيتوبلازم فقط",
+"In ribosomes - في الريبوسومات"
+],
+
+"answer":"In the nucleus - في النواة"
+},
+
+{
+"question": "Where is DNA found in prokaryotic cells? - أين يوجد DNA في الخلايا بدائية النواة؟",
+
+"options":[
+"Single circular chromosome in cytoplasm - كروموسوم دائري مفرد في السيتوبلازم",
+"In nucleus - في النواة",
+"In mitochondria - في الميتوكوندريا",
+"In chloroplasts - في البلاستيدات الخضراء"
+],
+
+"answer":"Single circular chromosome in cytoplasm - كروموسوم دائري مفرد في السيتوبلازم"
+},
+
+{
+"question": "What is plasmid DNA? - ما هو DNA البلازميد؟",
+
+"options":[
+"Extrachromosomal, self-replicating genetic material - مادة وراثية خارج الكروموسوم قابلة للاستنساخ الذاتي",
+"DNA in nucleus - DNA في النواة",
+"DNA forming ribosomes - DNA يشكل الريبوسومات",
+"Linear DNA in cytoplasm - DNA خطي في السيتوبلازم"
+],
+
+"answer":"Extrachromosomal, self-replicating genetic material - مادة وراثية خارج الكروموسوم قابلة للاستنساخ الذاتي"
+},
+
+{
+"question": "What type of genetic material do viruses have? - ما نوع المادة الوراثية لدى الفيروسات؟",
+
+"options":[
+"Single- or double-stranded DNA or RNA - DNA أو RNA مفرد أو مزدوج السلسلة",
+"Only double-stranded DNA - DNA مزدوج السلسلة فقط",
+"Only RNA - RNA فقط",
+"Protein only - بروتين فقط"
+],
+
+"answer":"Single- or double-stranded DNA or RNA - DNA أو RNA مفرد أو مزدوج السلسلة"
+},
+{
+"question": "What are the components of a DNA nucleotide? - ما هي مكونات النيوكليوتيد في DNA؟",
+
+"options":[
+"Deoxyribose sugar, phosphate group, nitrogenous base - سكر ديوكسيريبوز، مجموعة فوسفات، قاعدة نيتروجينية",
+"Ribose sugar, amino acid, phosphate - سكر ريبوز، حمض أميني، فوسفات",
+"Fatty acid, phosphate, nitrogen base - حمض دهني، فوسفات، قاعدة نيتروجينية",
+"Protein, sugar, RNA - بروتين، سكر، RNA"
+],
+
+"answer":"Deoxyribose sugar, phosphate group, nitrogenous base - سكر ديوكسيريبوز، مجموعة فوسفات، قاعدة نيتروجينية"
+},
+
+{
+"question": "Which bases always pair together in DNA? - أي القواعد ترتبط مع بعضها دائمًا في DNA؟",
+
+"options":[
+"Adenine with Thymine, Cytosine with Guanine - الأدينين مع الثايمين، السيتوزين مع الجوانين",
+"Adenine with Guanine, Cytosine with Thymine - الأدينين مع الجوانين، السيتوزين مع الثايمين",
+"Adenine with Cytosine, Thymine with Guanine - الأدينين مع السيتوزين، الثايمين مع الجوانين",
+"Any base with any base - أي قاعدة مع أي قاعدة"
+],
+
+"answer":"Adenine with Thymine, Cytosine with Guanine - الأدينين مع الثايمين، السيتوزين مع الجوانين"
+},
+
+{
+"question": "What is the function of DNA as a template? - ما وظيفة DNA كنموذج؟",
+
+"options":[
+"To produce RNA during transcription - لإنتاج RNA أثناء النسخ",
+"To digest proteins - لهضم البروتينات",
+"To produce lipids - لإنتاج الدهون",
+"To transport oxygen - لنقل الأكسجين"
+],
+
+"answer":"To produce RNA during transcription - لإنتاج RNA أثناء النسخ"
+},
+
+{
+"question": "Where else is DNA found in eukaryotic cells besides the nucleus? - أين يوجد DNA في الخلايا حقيقية النواة بجانب النواة؟",
+
+"options":[
+"In mitochondria and chloroplasts - في الميتوكوندريا والبلاستيدات الخضراء",
+"In ribosomes only - في الريبوسومات فقط",
+"In lysosomes - في الليسوسومات",
+"In Golgi apparatus - في جهاز جولجي"
+],
+
+"answer":"In mitochondria and chloroplasts - في الميتوكوندريا والبلاستيدات الخضراء"
+}
+
+]
+let examQuestions=[]
+let index=0
+let correct=0
+let wrong=0
+function shuffleArray(array){
+
+for (let i = array.length - 1; i > 0; i--) {
+
+let j = Math.floor(Math.random() * (i + 1))
+
+let temp = array[i]
+array[i] = array[j]
+array[j] = temp
+
+}
+
+return array
+
+}
+function start(){
+
+document.getElementById("startScreen").style.display="none"
+document.getElementById("setup").style.display="block"
+
+}
+function beginExam(){
+
+let val=document.getElementById("countSelect").value
+
+let shuffled = shuffleArray([...questions])
+
+if(val==="all"){
+
+examQuestions = shuffled
+
+}else{
+
+examQuestions = shuffled.slice(0,Number(val))
+
+}
+examQuestions.forEach(q=>{
+q.options = shuffleArray([...q.options])
+})
+
+index=0
+correct=0
+wrong=0
+
+document.getElementById("setup").style.display="none"
+document.getElementById("exam").style.display="block"
+
+showQuestion()
+
+}
+
+
+function showQuestion(){
+
+if(index>=examQuestions.length){
+finishExam()
+return
+}
+
+let q=examQuestions[index]
+
+document.getElementById("question").innerText="🦷 "+q.question
+
+let html=""
+
+q.options.forEach((opt,i)=>{
+
+html+=`<button class="option" onclick="answer(${i})">${opt}</button>`
+
+})
+
+document.getElementById("options").innerHTML=html
+
+}
+
+
+function answer(i){
+
+let selected = examQuestions[index].options[i]
+
+if(selected === examQuestions[index].answer){
+
+correct++
+
+}else{
+
+wrong++
+
+}
+
+index++
+
+updateProgress()
+
+showQuestion()
+
+}
+
+
+function updateProgress(){
+
+document.getElementById("correct").innerText="الاجابات الصحيحة: "+correct
+document.getElementById("wrong").innerText="الاجابات الخطأ: "+wrong
+
+let total = correct + wrong
+
+if(total===0) return
+
+let score = (correct/total)*100
+
+let level=""
+
+if(score<30) level="تعبانه ليششش؟؟؟"
+else if(score<50) level="هاي ليش ضعيفه زنوبتناا؟؟"
+else if(score<70) level="جيد جدا دكتورتناا"
+else if(score<85) level="عفييه زنوبتنا"
+else if(score<95) level="والله بطله منتاززز"
+else level="مفعله هكرررر"
+
+document.getElementById("level").innerText="مستواج: "+level
+
+}
+
+
+function finishExam(){
+
+document.getElementById("exam").innerHTML=
+`<h1>خلص الامتحان دكتورتنااا</h1>
+<p class="result">صح: ${correct}</p>
+<p class="result">غلط: ${wrong}</p>`
+
+updateProgress()
+
+}
+
+
+function toggleProgress(){
+
+let p=document.getElementById("progressPanel")
+
+if(p.style.display==="none" || p.style.display===""){
+p.style.display="block"
+}else{
+p.style.display="none"
+}
+
+}
+</script>
+
+</body>
+</html>
