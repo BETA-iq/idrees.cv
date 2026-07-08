@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1">
+<title>BETA</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(135deg,#004a9f,#00162e);}
+body:before,body:after{content:"";position:fixed;left:-30%;width:160%;height:220px;border-radius:45%;
+background:rgba(255,255,255,.05);bottom:-120px;animation:w 28s linear infinite}
+body:after{animation-duration:42s;opacity:.4}
+@keyframes w{to{transform:rotate(360deg)}}
+#logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+color:#fff;font:300 84px Segoe UI,Arial;letter-spacing:16px;text-shadow:0 0 20px #69c7ff;animation:p 5s ease-in-out infinite}
+@keyframes p{50%{opacity:.8}}
+.f{position:fixed;color:rgba(255,255,255,.18);font:32px Arial;animation:fly 18s linear forwards;will-change:transform,opacity}
+@keyframes fly{0%{opacity:0;transform:translate3d(var(--x1),var(--y1),0)}
+10%,90%{opacity:1}100%{opacity:0;transform:translate3d(var(--x2),var(--y2),0)}}
+</style></head><body><div id=logo>BETA</div>
+<script>
+const s=["□","△","○","✕","◇"];
+function add(){
+ let d=document.createElement("div");d.className="f";d.textContent=s[Math.random()*s.length|0];
+ d.style.setProperty("--x1",(Math.random()*100-10)+"vw");
+ d.style.setProperty("--y1",(Math.random()*100-10)+"vh");
+ d.style.setProperty("--x2",(Math.random()*100-10)+"vw");
+ d.style.setProperty("--y2",(Math.random()*100-10)+"vh");
+ d.style.left="0";d.style.top="0";
+ document.body.appendChild(d);
+ setTimeout(()=>d.remove(),18000);
+}
+add();setInterval(add,9000);
+</script></body></html>
