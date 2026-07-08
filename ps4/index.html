@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BETA</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at top,#0b6cff,#02152f 70%);}
+canvas{position:fixed;inset:0}#logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+font:300 88px Segoe UI,Arial;color:#fff;letter-spacing:16px;text-shadow:0 0 20px #7fd0ff,0 0 60px #0af;
+animation:pulse 5s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.75;transform:translate(-50%,-50%) scale(1.03)}}
+</style></head><body><canvas id=c></canvas><div id=logo>BETA</div>
+<script>
+const cv=c,ctx=cv.getContext('2d');function rs(){cv.width=innerWidth;cv.height=innerHeight}onresize=rs;rs();
+const parts=[...Array(170)].map(()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2+1,v:(Math.random()*0.5+.1),a:Math.random()}));
+const icons=["✦","◌","◇","△","□","○","✧","✩"];
+let floaters=[];
+function spawn(){
+ let side=Math.floor(Math.random()*4),x,y,vx,vy;
+ if(side==0){x=-40;y=Math.random()*cv.height;vx=.3+Math.random()*.4;vy=(Math.random()-.5)*.2;}
+ if(side==1){x=cv.width+40;y=Math.random()*cv.height;vx=-(.3+Math.random()*.4);vy=(Math.random()-.5)*.2;}
+ if(side==2){x=Math.random()*cv.width;y=-40;vy=.3+Math.random()*.4;vx=(Math.random()-.5)*.2;}
+ if(side==3){x=Math.random()*cv.width;y=cv.height+40;vy=-(.3+Math.random()*.4);vx=(Math.random()-.5)*.2;}
+ floaters.push({x,y,vx,vy,s:26+Math.random()*24,r:0,vr:(Math.random()-.5)*.01,ch:icons[Math.floor(Math.random()*icons.length)],o:.15+Math.random()*.25});
+}
+setInterval(spawn,1800);
+for(let i=0;i<4;i++)spawn();
+function draw(){
+ctx.clearRect(0,0,cv.width,cv.height);
+// particles
+for(const p of parts){
+ p.y-=p.v;if(p.y<0){p.y=cv.height;p.x=Math.random()*cv.width}
+ ctx.fillStyle="rgba(180,220,255,"+(0.2+p.a*.6)+")";
+ ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();
+}
+// waves
+for(let i=0;i<3;i++){ctx.beginPath();ctx.strokeStyle="rgba(120,180,255,.08)";
+ctx.lineWidth=80-i*20;
+for(let x=0;x<cv.width;x+=8){
+ let y=cv.height*.6+i*70+Math.sin((x+performance.now()*0.03+i*90)/180)*30;
+ x?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+ctx.stroke();}
+ctx.textAlign="center";ctx.textBaseline="middle";
+for(const f of floaters){
+ f.x+=f.vx;f.y+=f.vy;f.r+=f.vr;
+ ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.r);ctx.font=f.s+"px Segoe UI Symbol";ctx.fillStyle="rgba(255,255,255,"+f.o+")";ctx.fillText(f.ch,0,0);ctx.restore();
+}
+floaters=floaters.filter(f=>f.x>-80&&f.x<cv.width+80&&f.y>-80&&f.y<cv.height+80);
+requestAnimationFrame(draw)}
+draw();
+</script></body></html>
